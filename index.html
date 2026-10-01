@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QuickCast — Free Screen Recorder for Chrome with Instant Share Links</title>
+  <meta name="description" content="Record your screen, a tab or a window with mic and webcam, then share a link instantly. Free Chrome screen recorder: no watermark, free downloads, 4K on Studio." />
+  <!-- seo -->
+  <link rel="canonical" href="https://quick-cast-delta.vercel.app/" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="QuickCast" />
+  <meta property="og:title" content="QuickCast — Free Screen Recorder for Chrome with Instant Share Links" />
+  <meta property="og:description" content="Record your screen, a tab or a window with mic and webcam, then share a link instantly. Free Chrome screen recorder: no watermark, free downloads, 4K on Studio." />
+  <meta property="og:url" content="https://quick-cast-delta.vercel.app/" />
+  <meta property="og:image" content="https://quick-cast-delta.vercel.app/assets/og-default.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="QuickCast — Free Screen Recorder for Chrome with Instant Share Links" />
+  <meta name="twitter:description" content="Record your screen, a tab or a window with mic and webcam, then share a link instantly. Free Chrome screen recorder: no watermark, free downloads, 4K on Studio." />
+  <meta name="twitter:image" content="https://quick-cast-delta.vercel.app/assets/og-default.png" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"QuickCast","applicationCategory":"MultimediaApplication","operatingSystem":"Chrome, Windows, macOS, Linux, ChromeOS","description":"Record your screen, a tab or a window with mic and webcam, then share a link instantly. Free Chrome screen recorder: no watermark, free downloads, 4K on Studio.","url":"https://quick-cast-delta.vercel.app/","image":"https://quick-cast-delta.vercel.app/assets/og-default.png","offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (monthly)","price":"8.00","priceCurrency":"USD"},{"@type":"Offer","name":"Pro (yearly)","price":"72.00","priceCurrency":"USD"},{"@type":"Offer","name":"Studio (monthly)","price":"14.00","priceCurrency":"USD"},{"@type":"Offer","name":"Studio (yearly)","price":"132.00","priceCurrency":"USD"}]},{"@type":"Organization","name":"QuickCast","url":"https://quick-cast-delta.vercel.app","logo":"https://quick-cast-delta.vercel.app/assets/icon-128.png"},{"@type":"WebSite","name":"QuickCast","url":"https://quick-cast-delta.vercel.app"}]}</script>
+  <!-- /seo -->
+  <meta name="theme-color" content="#FCF8FF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#131318" media="(prefers-color-scheme: dark)" />
+  <meta property="og:title" content="QuickCast — Record Screen. Share Instantly." />
+  <meta property="og:description" content="Record your screen, tab, mic, and webcam. Get a shareable link in seconds." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" />
+  <link rel="stylesheet" href="/assets/m3.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-128.png" />
+  <script src="/assets/theme.js"></script>
+  <style>
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Scroll reveal ── */
+    .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity var(--duration-long) var(--ease-emph-dec), transform var(--duration-long) var(--ease-emph-dec); }
+    .js [data-reveal].in { opacity: 1; transform: none; }
+
+    /* ── Hero ── */
+    .hero { position: relative; padding: 56px 0 96px; overflow-x: clip; }
+    .hero > .wrap, .cta-band > :not(.aurora) { position: relative; z-index: 1; }
+    .hero > .aurora { border-radius: 0; opacity: .75; -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent); mask-image: linear-gradient(to bottom, #000 55%, transparent); }
+    .hero > .aurora i { width: 46%; filter: blur(80px); }
+    h1 .w { display: inline-block; animation: word-rise 700ms var(--ease-spring) both; }
+    h1 .w:nth-child(2) { animation-delay: 110ms; }
+    @keyframes word-rise { from { opacity: 0; transform: translateY(40%) rotate(4deg); } to { opacity: 1; transform: none; } }
+    .h1-pill { background: linear-gradient(110deg, var(--md-tertiary-container), var(--md-peach-container), var(--md-yellow-container), var(--md-tertiary-container)); background-size: 300% 100%; animation: pill-in 700ms 250ms var(--ease-spring) both, pill-flow 8s linear infinite 1s; }
+    @keyframes pill-flow { to { background-position: 300% 0; } }
+    .stage { background: linear-gradient(145deg, color-mix(in srgb, var(--md-primary-container) 78%, var(--md-surface)), color-mix(in srgb, var(--md-tertiary-container) 62%, var(--md-surface))); }
+    .sh-a { color: var(--md-yellow-container) !important; }
+    .sh-c { color: var(--md-tertiary) !important; }
+    .sh-b { color: var(--md-mint-container) !important; }
+    .eyebrow { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+    @media (prefers-reduced-motion: reduce) { h1 .w, .h1-pill { animation: none !important; } }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center; }
+    .hero-copy { animation: m3-enter var(--duration-long) var(--ease-emph-dec) both; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 32px; padding: 0 16px 0 12px; border-radius: var(--shape-sm);
+      background: var(--md-surface-container-high); color: var(--md-on-surface-variant);
+      font-size: 14px; font-weight: 500; margin-bottom: 28px;
+    }
+    .live-dot { position: relative; width: 8px; height: 8px; border-radius: 50%; background: var(--md-tertiary); }
+    .live-dot::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; background: var(--md-tertiary); opacity: .3; animation: live-ring 2s var(--ease-emph) infinite; }
+    @keyframes live-ring { from { transform: scale(.5); opacity: .45; } to { transform: scale(1.8); opacity: 0; } }
+    h1 {
+      font-size: clamp(48px, 7.2vw, 96px); font-weight: 650; line-height: 1.02; letter-spacing: -.035em;
+      font-variation-settings: "opsz" 144; margin-bottom: 24px;
+    }
+    .h1-pill {
+      display: inline-block; padding: 0 .28em .06em; border-radius: var(--shape-full);
+      background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);
+      transform-origin: 20% 60%; animation: pill-in 700ms 250ms var(--ease-spring) both;
+    }
+    @keyframes pill-in { from { transform: scale(.6) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
+    .hero-sub { font-size: 20px; line-height: 1.55; color: var(--md-on-surface-variant); max-width: 480px; margin-bottom: 36px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .hero-note { font-size: 14px; color: var(--md-on-surface-variant); }
+    .hero-note b { color: var(--md-on-surface); font-weight: 600; }
+
+    /* Stage: live product mock on a tonal container, ringed by drifting M3 shapes */
+    .stage {
+      position: relative; aspect-ratio: 1 / 1; max-width: 540px; justify-self: center; width: 100%;
+      border-radius: var(--shape-xxl);
+      background: var(--md-primary-container);
+      display: grid; place-items: center;
+      animation: m3-pop 700ms 100ms var(--ease-emph-dec) both;
+    }
+    .stage .m3-shape { animation: m3-drift 9s ease-in-out infinite; }
+    .sh-a { width: 108px; height: 108px; top: -34px; right: -26px; color: var(--md-tertiary-container); }
+    .sh-b { width: 76px; height: 76px; bottom: -22px; left: -24px; color: var(--md-secondary-container); animation-delay: -3s !important; animation-duration: 11s !important; }
+    .sh-c { width: 44px; height: 44px; top: 18%; left: -20px; color: var(--md-tertiary); animation-delay: -6s !important; }
+    .sh-d { width: 58px; height: 58px; bottom: 12%; right: -18px; color: var(--md-primary); opacity: .9; animation-delay: -1.5s !important; animation-duration: 12s !important; }
+
+    .mock {
+      width: min(78%, 340px);
+      background: var(--md-surface-container-low);
+      border-radius: var(--shape-xl); padding: 20px;
+      box-shadow: var(--elev-4);
+      display: flex; flex-direction: column; gap: 14px;
+      animation: mock-bob 6s ease-in-out infinite;
+    }
+    @keyframes mock-bob { 0%,100% { transform: translateY(0) rotate(-1.2deg); } 50% { transform: translateY(-8px) rotate(.6deg); } }
+    .mock-top { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 650; letter-spacing: -.01em; }
+    .mock-top .qc-logo { --size: 32px; }
+    .mock-top span:last-child { margin-left: auto; width: 28px; height: 28px; border-radius: 50%; background: var(--md-tertiary-container); }
+    .mock-label { font-size: 14px; font-weight: 600; }
+    .mock-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .mock-seg span {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      height: 40px; border-radius: var(--shape-sm); font-size: 13px; font-weight: 500;
+      background: var(--md-surface-container-highest); color: var(--md-on-surface-variant);
+    }
+    .mock-seg span:first-child { border-radius: var(--shape-full); background: var(--md-primary); color: var(--md-on-primary); }
+    .mock-seg svg { width: 16px; height: 16px; }
+    .mock-list { background: var(--md-surface-container); border-radius: var(--shape-lg); padding: 4px 0; }
+    .mock-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; font-size: 13px; color: var(--md-on-surface-variant); }
+    .mini-switch { width: 36px; height: 22px; border-radius: 99px; background: var(--md-primary); position: relative; }
+    .mini-switch::after { content: ""; position: absolute; top: 3px; right: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--md-on-primary); }
+    .mini-switch.off { background: var(--md-surface-container-highest); box-shadow: inset 0 0 0 2px var(--md-outline); }
+    .mini-switch.off::after { right: auto; left: 5px; top: 5px; width: 12px; height: 12px; background: var(--md-outline); }
+    .mock-rec {
+      position: relative; height: 56px; border-radius: var(--shape-full);
+      background: var(--md-tertiary); color: var(--md-on-tertiary);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: 16px; font-weight: 600;
+    }
+    .mock-rec::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 0 var(--md-tertiary); animation: rec-halo 2.4s var(--ease-emph) infinite; }
+    @keyframes rec-halo { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-tertiary) 45%, transparent); } 70%,100% { box-shadow: 0 0 0 14px transparent; } }
+    .mock-rec i { width: 12px; height: 12px; border-radius: 50%; background: currentColor; }
+
+    /* ── Sections ── */
+    section { padding: 96px 0; }
+    .eyebrow {
+      display: inline-flex; height: 32px; align-items: center; padding: 0 14px; border-radius: var(--shape-full);
+      background: var(--md-secondary-container); color: var(--md-on-secondary-container);
+      font-size: 14px; font-weight: 600; margin-bottom: 20px;
+    }
+    .section-head { text-align: center; max-width: 680px; margin: 0 auto 56px; }
+    h2 { font-size: clamp(34px, 4.6vw, 56px); font-weight: 650; line-height: 1.08; letter-spacing: -.03em; font-variation-settings: "opsz" 96; margin-bottom: 16px; }
+    .section-sub { font-size: 18px; color: var(--md-on-surface-variant); line-height: 1.6; }
+
+    /* Bento features */
+    .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+    .feat {
+      --bg: var(--md-surface-container); --fg: var(--md-on-surface); --ic: var(--md-primary);
+      position: relative; overflow: hidden; border-radius: var(--shape-xl); padding: 32px;
+      background: var(--bg); color: var(--fg); min-height: 248px;
+      display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;
+      transition: border-radius var(--duration-slow) var(--ease-spring);
+    }
+    .feat:hover { border-radius: var(--shape-xxl); }
+    .feat:nth-child(1) { grid-column: span 4; --bg: var(--md-primary-container); --fg: var(--md-on-primary-container); --ic: var(--md-on-primary-container); }
+    .feat:nth-child(2) { grid-column: span 2; --bg: var(--md-tertiary-container); --fg: var(--md-on-tertiary-container); --ic: var(--md-on-tertiary-container); }
+    .feat:nth-child(3) { grid-column: span 2; --bg: var(--md-yellow-container); --fg: var(--md-on-yellow-container); --ic: var(--md-on-yellow-container); }
+    .feat:nth-child(4) { grid-column: span 2; --bg: var(--md-secondary-container); --fg: var(--md-on-secondary-container); --ic: var(--md-on-secondary-container); }
+    .feat:nth-child(5) { grid-column: span 2; --bg: var(--md-mint-container); --fg: var(--md-on-mint-container); --ic: var(--md-on-mint-container); }
+    .feat:nth-child(6) { grid-column: span 6; --bg: var(--md-peach-container); --fg: var(--md-on-peach-container); --ic: var(--md-on-peach-container); flex-direction: row; align-items: center; justify-content: flex-start; gap: 24px; min-height: 0; }
+    .feat-icon { position: relative; width: 64px; height: 64px; margin-bottom: auto; flex-shrink: 0; }
+    .feat:nth-child(6) .feat-icon { margin-bottom: 0; }
+    .feat-icon svg.shape { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--ic); transition: transform 700ms var(--ease-spring); }
+    .feat:hover .feat-icon svg.shape { transform: rotate(60deg) scale(1.06); }
+    .feat-icon svg.glyph { position: absolute; inset: 0; margin: auto; width: 26px; height: 26px; color: var(--bg); }
+    .feat h3 { font-size: 24px; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
+    .feat p { font-size: 16px; line-height: 1.55; opacity: .86; max-width: 440px; }
+    .feat:nth-child(1) h3 { font-size: 32px; }
+
+    /* Steps */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+    .step { background: var(--md-surface-container-low); border-radius: var(--shape-xl); padding: 32px; }
+    .step-num { position: relative; width: 72px; height: 72px; margin-bottom: 24px; display: grid; place-items: center; }
+    .step-num svg { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--md-primary); animation: qc-spin 24s linear infinite; }
+    .step:nth-child(2) .step-num svg { color: var(--md-tertiary); animation-direction: reverse; }
+    .step:nth-child(3) .step-num svg { color: var(--md-secondary); }
+    .step-num b { position: relative; font-size: 28px; font-weight: 700; color: var(--md-on-primary); }
+    .step:nth-child(2) .step-num b { color: var(--md-on-tertiary); }
+    .step:nth-child(3) .step-num b { color: var(--md-surface); }
+    .step h3 { font-size: 22px; font-weight: 600; margin-bottom: 8px; letter-spacing: -.01em; }
+    .step p { color: var(--md-on-surface-variant); line-height: 1.6; }
+
+    /* Pricing */
+    .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 840px; margin: 0 auto; }
+    .plan { border-radius: var(--shape-xl); padding: 36px 32px; background: var(--md-surface-container-low); display: flex; flex-direction: column; gap: 20px; box-shadow: inset 0 0 0 1px var(--md-outline-variant); }
+    .plan.featured { background: var(--md-primary-container); color: var(--md-on-primary-container); box-shadow: none; }
+    .plan-head { display: flex; align-items: center; justify-content: space-between; }
+    .plan-name { font-size: 18px; font-weight: 600; }
+    .best-badge { height: 28px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: var(--shape-full); background: var(--md-tertiary); color: var(--md-on-tertiary); font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+    .plan-price { font-size: 56px; font-weight: 650; letter-spacing: -.04em; line-height: 1; font-variation-settings: "opsz" 96; }
+    .plan-price sub { font-size: 16px; font-weight: 500; letter-spacing: 0; vertical-align: baseline; opacity: .75; margin-left: 4px; }
+    .plan-desc { color: inherit; opacity: .8; }
+    .plan ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .plan li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; }
+    .plan li svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--md-primary); }
+    .plan .btn { margin-top: auto; }
+
+    /* CTA band */
+    .cta-band {
+      position: relative; overflow: hidden;
+      border-radius: var(--shape-xxl); padding: 72px 48px;
+      background: var(--md-tertiary-container); color: var(--md-on-tertiary-container);
+      display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+    }
+    .cta-band h2 { margin: 0; max-width: 560px; }
+    .cta-band .qc-logo { --size: 120px; }
+    /* Add to Chrome: the logo fills the button height like a badge (overrides the 24px .btn-xl icon rule) */
+    .cta-band .btn-xl { padding-left: 8px; padding-right: 36px; gap: 14px; }
+    .cta-band .btn-xl .cta-logo { --size: 56px; width: 56px; height: 56px; flex-shrink: 0; }
+    .cta-band .btn-xl .cta-logo svg { width: 100%; height: 100%; }
+
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 56px; }
+      .stage { max-width: 440px; }
+      .bento { grid-template-columns: 1fr 1fr; }
+      .feat:nth-child(n) { grid-column: span 1; }
+      .feat:nth-child(1), .feat:nth-child(6) { grid-column: span 2; }
+      .steps { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 0 16px; }
+      .hero { padding: 32px 0 64px; }
+      section { padding: 64px 0; }
+      .bento, .plans { grid-template-columns: 1fr; }
+      .feat:nth-child(n) { grid-column: span 1; }
+      .feat:nth-child(6) { flex-direction: column; align-items: flex-start; }
+      .feat { padding: 24px; min-height: 200px; }
+      .stage .sh-a, .stage .sh-c { display: none; }
+      .cta-band { padding: 48px 24px; }
+      .cta-band .qc-logo { --size: 88px; }
+      .cta-band .btn-xl .cta-logo { --size: 48px; width: 48px; height: 48px; }
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/calm.css" />
+</head>
+<body>
+
+  <!-- M3 shape library (referenced with <use>) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="s-cookie" viewBox="0 0 48 48"><path fill="currentColor" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/></symbol>
+      <symbol id="s-clover" viewBox="0 0 48 48"><path fill="currentColor" d="M24 0L26.3 0.5L28.4 1.8L30.2 3.7L31.5 6L32.4 8.3L33.1 10.4L33.7 12.1L34.6 13.4L35.9 14.3L37.6 14.9L39.7 15.6L42 16.5L44.3 17.8L46.2 19.6L47.5 21.7L48 24L47.5 26.3L46.2 28.4L44.3 30.2L42 31.5L39.7 32.4L37.6 33.1L35.9 33.7L34.6 34.6L33.7 35.9L33.1 37.6L32.4 39.7L31.5 42L30.2 44.3L28.4 46.2L26.3 47.5L24 48L21.7 47.5L19.6 46.2L17.8 44.3L16.5 42L15.6 39.7L14.9 37.6L14.3 35.9L13.4 34.6L12.1 33.7L10.4 33.1L8.3 32.4L6 31.5L3.7 30.2L1.8 28.4L0.5 26.3L0 24L0.5 21.7L1.8 19.6L3.7 17.8L6 16.5L8.3 15.6L10.4 14.9L12.1 14.3L13.4 13.4L14.3 12.1L14.9 10.4L15.6 8.3L16.5 6L17.8 3.7L19.6 1.8L21.7 0.5Z"/></symbol>
+      <symbol id="s-sunny" viewBox="0 0 48 48"><path fill="currentColor" d="M24 0.2L26.3 1L28.2 2.9L29.8 5L31.3 6.3L33.4 6.5L35.9 6.1L38.7 6.1L40.8 7.2L41.9 9.3L41.9 12.1L41.5 14.6L41.7 16.7L43 18.2L45.1 19.8L47 21.7L47.8 24L47 26.3L45.1 28.2L43 29.8L41.7 31.3L41.5 33.4L41.9 35.9L41.9 38.7L40.8 40.8L38.7 41.9L35.9 41.9L33.4 41.5L31.3 41.7L29.8 43L28.2 45.1L26.3 47L24 47.8L21.7 47L19.8 45.1L18.2 43L16.7 41.7L14.6 41.5L12.1 41.9L9.3 41.9L7.2 40.8L6.1 38.7L6.1 35.9L6.5 33.4L6.3 31.3L5 29.8L2.9 28.2L1 26.3L0.2 24L1 21.7L2.9 19.8L5 18.2L6.3 16.7L6.5 14.6L6.1 12.1L6.1 9.3L7.2 7.2L9.3 6.1L12.1 6.1L14.6 6.5L16.7 6.3L18.2 5L19.8 2.9L21.7 1Z"/></symbol>
+      <symbol id="s-six" viewBox="0 0 48 48"><path fill="currentColor" d="M24 0.4L26.4 1L28.5 2.7L30.2 4.8L31.7 6.7L33.2 8.1L35.1 8.7L37.5 9L40.2 9.4L42.7 10.4L44.4 12.2L45.1 14.6L44.7 17.3L43.8 19.8L42.8 22L42.4 24L42.8 26L43.8 28.2L44.7 30.7L45.1 33.4L44.4 35.8L42.7 37.6L40.2 38.6L37.5 39L35.1 39.3L33.2 39.9L31.7 41.3L30.2 43.2L28.5 45.3L26.4 47L24 47.6L21.6 47L19.5 45.3L17.8 43.2L16.3 41.3L14.8 39.9L12.9 39.3L10.5 39L7.8 38.6L5.3 37.6L3.6 35.8L2.9 33.4L3.3 30.7L4.2 28.2L5.2 26L5.6 24L5.2 22L4.2 19.8L3.3 17.3L2.9 14.6L3.6 12.2L5.3 10.4L7.8 9.4L10.5 9L12.9 8.7L14.8 8.1L16.3 6.7L17.8 4.8L19.5 2.7L21.6 1Z"/></symbol>
+      <symbol id="s-wavy" viewBox="0 0 48 48"><path fill="currentColor" d="M24 0.9L26 1.5L27.7 2.9L29.4 3.8L31.3 3.8L33.5 3.6L35.5 4L36.9 5.5L37.8 7.6L38.8 9.2L40.4 10.2L42.5 11.1L44 12.4L44.4 14.5L44.2 16.7L44.2 18.6L45.1 20.3L46.5 22L47.1 24L46.5 26L45.1 27.7L44.2 29.4L44.2 31.3L44.4 33.5L44 35.5L42.5 36.9L40.4 37.8L38.8 38.8L37.8 40.4L36.9 42.5L35.5 44L33.5 44.4L31.3 44.2L29.4 44.2L27.7 45.1L26 46.5L24 47.1L22 46.5L20.3 45.1L18.6 44.2L16.7 44.2L14.5 44.4L12.4 44L11.1 42.5L10.2 40.4L9.2 38.8L7.6 37.8L5.5 36.9L4 35.6L3.6 33.5L3.8 31.3L3.8 29.4L2.9 27.7L1.5 26L0.9 24L1.5 22L2.9 20.3L3.8 18.6L3.8 16.7L3.6 14.5L4 12.4L5.5 11.1L7.6 10.2L9.2 9.2L10.2 7.6L11.1 5.5L12.4 4L14.5 3.6L16.7 3.8L18.6 3.8L20.3 2.9L22 1.5Z"/></symbol>
+      <symbol id="s-pill" viewBox="0 0 48 48"><rect fill="currentColor" x="10" y="0" width="28" height="48" rx="14"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="qc-topbar" id="topbar">
+    <a href="/" class="qc-brand" aria-label="QuickCast home">
+      <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+      QuickCast
+    </a>
+    <nav class="qc-nav" aria-label="Main">
+      <a href="#features" class="qc-nav-link">Features</a>
+      <a href="#how-it-works" class="qc-nav-link">How it works</a>
+      <a href="#pricing" class="qc-nav-link">Pricing</a>
+      <a href="dashboard/" class="qc-nav-link">Dashboard</a>
+      <a href="https://chrome.google.com/webstore" class="btn btn-primary" target="_blank" rel="noopener">Add to Chrome</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <div class="hero">
+      <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <div class="hero-chip"><span class="live-dot"></span>Free · 25 recordings included</div>
+          <h1><span class="w">Record.</span> <span class="w">Share.</span><br><span class="h1-pill">Done.</span></h1>
+          <p class="hero-sub">The fastest way to share what's on your screen. Click record, get a link, paste it anywhere.</p>
+          <div class="hero-actions">
+            <a href="https://chrome.google.com/webstore" class="btn btn-primary btn-lg shine" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 14.5v-9l7 4.5-7 4.5z"/></svg>
+              Add to Chrome — Free
+            </a>
+            <a href="#pricing" class="btn btn-tonal btn-lg">See pricing</a>
+          </div>
+          <p class="hero-note"><b>No credit card required.</b> Works on any website.</p>
+        </div>
+
+        <div class="stage" aria-hidden="true">
+          <span class="m3-shape sh-a" data-parallax="-0.08"><svg><use href="#s-sunny"/></svg></span>
+          <span class="m3-shape sh-b" data-parallax="0.06"><svg><use href="#s-clover"/></svg></span>
+          <span class="m3-shape sh-c" data-parallax="-0.12"><svg><use href="#s-pill"/></svg></span>
+          <span class="m3-shape sh-d" data-parallax="0.1"><svg><use href="#s-six"/></svg></span>
+          <div class="mock">
+            <div class="mock-top">
+              <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+              <span>QuickCast</span>
+              <span></span>
+            </div>
+            <div class="mock-label">What do you want to capture?</div>
+            <div class="mock-seg" id="mock-seg">
+              <span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Tab</span>
+              <span>Screen</span>
+              <span>Window</span>
+            </div>
+            <div class="mock-list">
+              <div class="mock-row">Microphone <span class="mini-switch"></span></div>
+              <div class="mock-row">Webcam bubble <span class="mini-switch off"></span></div>
+            </div>
+            <div class="mock-rec"><i></i>Start recording</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Features</span>
+          <h2>Everything you need. Nothing extra.</h2>
+          <p class="section-sub">Built for people who want to communicate faster, not learn new software.</p>
+        </div>
+        <div class="bento">
+          <article class="feat" data-reveal>
+            <div class="feat-icon"><svg class="shape"><use href="#s-cookie"/></svg><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="3"/><path d="M8 21h8M12 17v4"/></svg></div>
+            <h3>Screen &amp; Tab recording</h3>
+            <p>Capture your full screen, a window, or just one browser tab.</p>
+          </article>
+          <article class="feat" data-reveal>
+            <div class="feat-icon"><svg class="shape"><use href="#s-clover"/></svg><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 17v4M9 21h6"/></svg></div>
+            <h3>Mic + system audio</h3>
+            <p>Narrate while you record, or capture system sound alongside your voice.</p>
+          </article>
+          <article class="feat" data-reveal>
+            <div class="feat-icon"><svg class="shape"><use href="#s-sunny"/></svg><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="4"/><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></div>
+            <h3>Webcam bubble</h3>
+            <p>Add a picture-in-picture webcam overlay for tutorials and demos.</p>
+          </article>
+          <article class="feat" data-reveal>
+            <div class="feat-icon"><svg class="shape"><use href="#s-six"/></svg><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+            <h3>Instant share link</h3>
+            <p>Every recording gets a private link ready to copy in one click.</p>
+          </article>
+          <article class="feat" data-reveal>
+            <div class="feat-icon"><svg class="shape"><use href="#s-wavy"/></svg><svg class="glyph" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/></svg></div>
+            <h3>Pause &amp; resume</h3>
+            <p>Pause to skip something, resume where you left off. One clean file.</p>
+          </article>
+          <article class="feat" data-reveal>
+            <div class="feat-icon"><svg class="shape"><use href="#s-cookie"/></svg><svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <div>
+              <h3>Crash recovery</h3>
+              <p>Chunks are saved every second. Browser crash? Your recording is safe.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">How it works</span>
+          <h2>Three steps, done in 60 seconds</h2>
+          <p class="section-sub">From install to shareable link in under a minute.</p>
+        </div>
+        <div class="steps">
+          <div class="step" data-reveal>
+            <div class="step-num"><svg><use href="#s-cookie"/></svg><b>1</b></div>
+            <h3>Install</h3>
+            <p>One click from the Chrome Web Store. Sign in with Google to save recordings.</p>
+          </div>
+          <div class="step" data-reveal>
+            <div class="step-num"><svg><use href="#s-sunny"/></svg><b>2</b></div>
+            <h3>Record</h3>
+            <p>Click the QuickCast icon, choose Tab or Screen, hit Start Recording.</p>
+          </div>
+          <div class="step" data-reveal>
+            <div class="step-num"><svg><use href="#s-clover"/></svg><b>3</b></div>
+            <h3>Share</h3>
+            <p>When you stop, a shareable link is ready to copy and paste anywhere.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" style="padding-top:0">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Pricing</span>
+          <h2>Simple, honest pricing</h2>
+          <p class="section-sub">Free to start, with no watermark and free downloads. Pro when you need more.</p>
+        </div>
+        <div class="plans">
+          <div class="plan" data-reveal>
+            <div class="plan-head"><span class="plan-name">Free</span></div>
+            <div class="plan-price">$0<sub>/ month</sub></div>
+            <p class="plan-desc">For getting started and quick shares.</p>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>15 recordings a month</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Up to 5 min per recording, 720p</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>1 GB of storage</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Share links, downloads, trim, comments</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>No watermark</li>
+            </ul>
+            <a href="https://chrome.google.com/webstore" class="btn btn-tonal btn-lg btn-full" target="_blank" rel="noopener">Get started free</a>
+          </div>
+          <div class="plan featured" data-reveal>
+            <div class="plan-head"><span class="plan-name">Pro</span><span class="best-badge">MOST POPULAR</span></div>
+            <div class="plan-price">$6<sub>/ month, billed yearly</sub></div>
+            <p class="plan-desc">$8 month to month · ₹960 in India. Cancel any time.</p>
+            <ul>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Unlimited recordings</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Up to 60 min per recording, 1080p</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>AI noise cancellation for your mic (coming soon)</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>100 GB of storage, videos never expire</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Password &amp; expiring links, viewer insights</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>PayPal, cards or UPI</li>
+            </ul>
+            <a href="/pricing/" class="btn btn-primary btn-lg btn-full">See Pro plans</a>
+            <p class="plan-desc" style="margin-top:12px;margin-bottom:0">Need 4K and 2-hour videos? <a href="/pricing/">Studio</a> is $11/month billed yearly.</p>
+          </div>
+        </div>
+        <p class="section-sub" style="text-align:center;margin-top:20px"><a href="/compare/">How QuickCast compares to Loom and others →</a></p>
+      </div>
+    </section>
+
+    <!-- Closing CTA -->
+    <section style="padding-top:0">
+      <div class="wrap">
+        <div class="cta-band" data-reveal>
+          <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <h2>Your next screen share is one click away.</h2>
+          <a href="https://chrome.google.com/webstore" class="btn btn-tertiary btn-xl shine" target="_blank" rel="noopener">
+            <span class="qc-logo cta-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+            Add to Chrome
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="qc-footer">
+    <a href="/" class="qc-brand">
+      <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+      QuickCast
+    </a>
+    <nav class="qc-footer-links" aria-label="Footer">
+      <a href="/pricing/">Pricing</a>
+      <a href="/compare/">Compare</a>
+      <a href="/security.html">Security</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/refund.html">Refunds</a>
+      <a href="/support.html">Support</a>
+      <a href="dashboard/">Dashboard</a>
+    </nav>
+    <div class="qc-footer-copy">&copy; 2026 QuickCast</div>
+  </footer>
+
+  <script src="/assets/motion.js"></script>
+  <script src="/assets/auth.js" defer></script>
+  <script src="/assets/landing.js"></script>
+</body>
+</html>

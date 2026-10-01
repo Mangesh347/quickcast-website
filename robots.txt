@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /v/
+Disallow: /api/
+
+Sitemap: https://quick-cast-delta.vercel.app/sitemap.xml

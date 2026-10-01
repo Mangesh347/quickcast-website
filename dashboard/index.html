@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>My Recordings — QuickCast</title>
+  <meta name="theme-color" content="#FCF8FF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#131318" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" />
+  <link rel="stylesheet" href="/assets/m3.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-128.png" />
+  <script src="/assets/theme.js"></script>
+  <style>
+    :root { --sidebar-w: 280px; }
+    body { font-size: 14px; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar .quota-mini { padding: 12px 16px 14px; margin-bottom: 8px; border-radius: var(--shape-xl); background: var(--md-surface-container); }
+    .quota-mini-label { font-size: 12px; color: var(--md-on-surface-variant); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    #quota-mini-count { color: var(--md-primary) !important; font-size: 12px !important; }
+
+    /* Wavy linear progress (M3 Expressive) */
+    .quota-track { position: relative; height: 10px; border-radius: var(--shape-full); overflow: hidden; }
+    .quota-track::before { content: ""; position: absolute; left: 0; right: 0; top: 3px; height: 4px; border-radius: 99px; background: var(--md-secondary-container); }
+    .quota-fill {
+      position: relative; height: 100%; background: var(--md-primary);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10' viewBox='0 0 20 10'%3E%3Cpath d='M0 5Q5 1 10 5T20 5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0 / 20px 10px;
+              mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10' viewBox='0 0 20 10'%3E%3Cpath d='M0 5Q5 1 10 5T20 5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0 / 20px 10px;
+      animation: wave-run 1.2s linear infinite;
+      transition: width var(--duration-long) var(--ease-emph);
+    }
+    @keyframes wave-run { to { -webkit-mask-position: 20px 0; mask-position: 20px 0; } }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; padding: 32px 40px 80px; max-width: calc(1280px + var(--sidebar-w)); }
+    .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; gap: 16px; flex-wrap: wrap; }
+    .greeting { font-size: clamp(32px, 4vw, 48px); font-weight: 650; letter-spacing: -.03em; line-height: 1.1; font-variation-settings: "opsz" 96; animation: m3-enter var(--duration-long) var(--ease-emph-dec) both; }
+    .greeting-sub { font-size: 16px; color: var(--md-on-surface-variant); margin-top: 8px; }
+    .page-header .btn { height: 56px; padding: 0 24px; font-size: 16px; border-radius: var(--shape-lg); }
+    .page-header .btn:active { border-radius: var(--shape-xl); }
+
+    /* ── Workspace hero card ── */
+    .workspace-card {
+      position: relative; overflow: hidden;
+      background: var(--md-primary-container); color: var(--md-on-primary-container);
+      border-radius: var(--shape-xl); padding: 28px 32px; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 24px;
+      animation: m3-enter var(--duration-long) 60ms var(--ease-emph-dec) both;
+    }
+    .workspace-icon .qc-logo { --size: 64px; }
+    .workspace-card > :not(.aurora) { position: relative; z-index: 1; }
+    .stat-card:nth-child(1) { background: color-mix(in srgb, var(--md-primary-container) 55%, var(--md-surface-container-low)); }
+    .stat-card:nth-child(2) { background: color-mix(in srgb, var(--md-tertiary-container) 55%, var(--md-surface-container-low)); }
+    .stat-card:nth-child(3) { background: color-mix(in srgb, var(--md-yellow-container) 55%, var(--md-surface-container-low)); }
+    .stat-card:hover { filter: saturate(1.15); }
+    .workspace-text { flex: 1; min-width: 0; }
+    .workspace-title { font-size: 22px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 4px; }
+    .workspace-sub { font-size: 15px; opacity: .85; line-height: 1.45; }
+    .workspace-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .workspace-card .btn-outline { --btn-bg: var(--md-surface-container-lowest); --btn-fg: var(--md-primary); }
+
+    /* ── Stats ── */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+    .stat-card {
+      background: var(--md-surface-container-low); border-radius: var(--shape-xl); padding: 24px;
+      animation: m3-enter var(--duration-long) var(--ease-emph-dec) both;
+      transition: border-radius var(--duration-slow) var(--ease-spring), background var(--duration-base) var(--ease-emph);
+    }
+    .stat-card:hover { border-radius: var(--shape-xxl); background: var(--md-surface-container); }
+    .stat-label { font-size: 14px; font-weight: 500; color: var(--md-on-surface-variant); margin-bottom: 12px; }
+    .stat-value { font-size: 44px; font-weight: 650; letter-spacing: -.04em; line-height: 1; color: var(--md-on-surface); font-variation-settings: "opsz" 96; }
+    .stat-sub { font-size: 13px; color: var(--md-on-surface-variant); margin-top: 8px; }
+    .stat-card:nth-child(1) .stat-value { color: var(--md-primary); }
+    .stat-card:nth-child(2) .stat-value { color: var(--md-tertiary); }
+
+    /* ── Section header + filter (M3 connected button group) ── */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+    .section-title { font-size: 24px; font-weight: 600; letter-spacing: -.015em; }
+    .filter-tabs { display: flex; gap: 2px; }
+    .filter-tab {
+      position: relative; overflow: hidden; isolation: isolate;
+      height: 40px; padding: 0 18px; border: none; cursor: pointer;
+      font: 500 14px var(--font); color: var(--md-on-secondary-container);
+      background: var(--md-secondary-container); border-radius: var(--shape-sm);
+      transition: border-radius var(--duration-slow) var(--ease-spring), background var(--duration-base) var(--ease-emph), color var(--duration-base) var(--ease-emph);
+    }
+    .filter-tab:first-child { border-radius: var(--shape-full) var(--shape-sm) var(--shape-sm) var(--shape-full); }
+    .filter-tab:last-child { border-radius: var(--shape-sm) var(--shape-full) var(--shape-full) var(--shape-sm); }
+    .filter-tab.active { background: var(--md-primary); color: var(--md-on-primary); border-radius: var(--shape-full); }
+    .filter-tab::before { content: ""; position: absolute; inset: 0; z-index: -1; background: currentColor; opacity: 0; transition: opacity var(--duration-fast) linear; }
+    .filter-tab:hover::before { opacity: .08; }
+
+    /* ── Search (M3 search bar) ── */
+    .search-row { margin-bottom: 20px; }
+    .search-wrap { position: relative; max-width: 420px; }
+    .search-wrap svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--md-on-surface-variant); pointer-events: none; }
+    .search-input {
+      width: 100%; height: 56px; padding: 0 20px 0 52px;
+      background: var(--md-surface-container-high); border: none; border-radius: var(--shape-full);
+      font: 400 16px var(--font); color: var(--md-on-surface); outline: none;
+      transition: background var(--duration-base) var(--ease-emph), box-shadow var(--duration-base) var(--ease-emph);
+    }
+    .search-input::placeholder { color: var(--md-on-surface-variant); }
+    .search-input:focus { background: var(--md-surface-container-highest); box-shadow: inset 0 0 0 2px var(--md-primary); }
+
+    /* ── Recordings grid ── */
+    .recordings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .video-card {
+      background: var(--md-surface-container-low); border-radius: var(--shape-xl); overflow: hidden; padding: 8px;
+      transition: border-radius var(--duration-slow) var(--ease-spring), background var(--duration-base) var(--ease-emph), box-shadow var(--duration-base) var(--ease-emph), opacity var(--duration-base) linear;
+      animation: m3-enter var(--duration-long) var(--ease-emph-dec) both;
+    }
+    .video-card:hover { background: var(--md-surface-container); box-shadow: var(--elev-2); }
+    .card-thumb {
+      width: 100%; aspect-ratio: 16/9; display: block; position: relative; overflow: hidden; text-decoration: none;
+      border-radius: calc(var(--shape-xl) - 8px);
+      transition: border-radius var(--duration-slow) var(--ease-spring);
+    }
+    .video-card:hover .card-thumb { border-radius: var(--shape-xxl); }
+    .card-thumb svg { width: 100%; height: 100%; display: block; transition: transform var(--duration-long) var(--ease-emph); }
+    .video-card:hover .card-thumb svg { transform: scale(1.06); }
+    .card-play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .card-play-btn {
+      width: 56px; height: 56px; border-radius: var(--shape-lg);
+      background: var(--md-primary); color: var(--md-on-primary);
+      display: flex; align-items: center; justify-content: center; box-shadow: var(--elev-3);
+      opacity: 0; transform: scale(.7) rotate(-20deg);
+      transition: opacity var(--duration-base) var(--ease-emph), transform var(--duration-slow) var(--ease-spring), border-radius var(--duration-slow) var(--ease-spring);
+    }
+    .video-card:hover .card-play-btn, .card-thumb:focus-visible .card-play-btn { opacity: 1; transform: none; border-radius: 50%; }
+    .card-play-btn svg { width: 22px; height: 22px; color: var(--md-on-primary); margin-left: 3px; }
+    .card-body { padding: 14px 10px 8px; }
+    .card-title { font-size: 16px; font-weight: 600; color: var(--md-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+    .card-meta { font-size: 13px; color: var(--md-on-surface-variant); display: flex; gap: 6px; align-items: center; margin-bottom: 14px; }
+    .meta-dot { opacity: .6; }
+    .card-actions { display: flex; gap: 4px; }
+    .card-btn {
+      position: relative; overflow: hidden; isolation: isolate;
+      flex: 1; height: 36px; padding: 0 10px; border: none; cursor: pointer;
+      border-radius: var(--shape-full); background: var(--md-secondary-container); color: var(--md-on-secondary-container);
+      font: 500 13px var(--font); text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: border-radius var(--duration-base) var(--ease-spring), background var(--duration-base) var(--ease-emph), color var(--duration-base) var(--ease-emph);
+    }
+    .card-btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: currentColor; opacity: 0; transition: opacity var(--duration-fast) linear; }
+    .card-btn:hover::before { opacity: .08; }
+    .card-btn:active { border-radius: var(--shape-sm); }
+    .card-btn.copied { background: var(--md-success-container); color: var(--md-on-success-container); }
+    .card-btn.danger { flex: 0 0 auto; width: 44px; padding: 0; font-size: 0; gap: 0; background: transparent; color: var(--md-on-surface-variant); }
+    .card-btn.danger:hover { background: var(--md-error-container); color: var(--md-on-error-container); }
+    .card-btn svg { width: 16px; height: 16px; }
+    .card-btn.danger svg { width: 18px; height: 18px; }
+
+    /* ── Skeleton (matched shape) ── */
+    @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+    .skeleton {
+      background: linear-gradient(90deg, var(--md-surface-container-high) 25%, var(--md-surface-container-highest) 50%, var(--md-surface-container-high) 75%);
+      background-size: 1200px 100%; animation: shimmer 1.6s ease-in-out infinite; border-radius: var(--shape-sm);
+    }
+    .skel-card { background: var(--md-surface-container-low); border-radius: var(--shape-xl); overflow: hidden; padding: 8px; }
+    .skel-thumb { width: 100%; aspect-ratio: 16/9; border-radius: calc(var(--shape-xl) - 8px); }
+    .skel-body { padding: 14px 10px 8px; display: flex; flex-direction: column; gap: 10px; }
+    .skel-line { height: 12px; border-radius: var(--shape-full); }
+    .skel-w75 { width: 75%; } .skel-w50 { width: 50%; } .skel-w40 { width: 40%; height: 36px; }
+
+    /* ── Empty / auth states ── */
+    .empty-state, .auth-wall { text-align: center; padding: 64px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .empty-state { background: var(--md-surface-container-low); border-radius: var(--shape-xxl); }
+    .empty-state.hidden, .auth-wall.hidden { display: none; }
+    .empty-art, .auth-art { margin-bottom: 12px; }
+    .empty-art .qc-logo, .auth-art .qc-logo { --size: 128px; }
+    .empty-state h3 { font-size: 28px; font-weight: 650; letter-spacing: -.02em; }
+    .auth-wall h2 { font-size: 36px; font-weight: 650; letter-spacing: -.03em; }
+    .empty-state p, .auth-wall p { font-size: 16px; color: var(--md-on-surface-variant); max-width: 380px; line-height: 1.6; margin-bottom: 12px; }
+    .empty-state .btn, .auth-wall .btn { height: 56px; padding: 0 28px; font-size: 16px; }
+
+    .stats-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .stat-card { min-width: 0; }
+    .stat-card:nth-child(4) { background: color-mix(in srgb, var(--md-mint-container) 55%, var(--md-surface-container-low)); }
+    .stat-latest { font-size: 18px; letter-spacing: -.01em; line-height: 1.3; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .search-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .search-wrap { flex: 1; min-width: 220px; }
+    .sort-select { height: 56px; padding: 0 44px 0 20px; border: none; border-radius: var(--shape-full); background: var(--md-surface-container-high) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%23787680'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 16px center;
+      color: var(--md-on-surface); font: 500 15px var(--font); appearance: none; cursor: pointer; outline: none; }
+    .sort-select:focus-visible { box-shadow: inset 0 0 0 2px var(--md-primary); }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .card-title-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+    .card-title-row .card-title { flex: 1; min-width: 0; margin: 0; }
+    .card-rename { flex-shrink: 0; width: 32px; height: 32px; border: none; border-radius: 50%; background: none; color: var(--md-on-surface-variant); cursor: pointer; display: grid; place-items: center; opacity: 0; transition: opacity var(--duration-fast) linear, background var(--duration-base) var(--ease-emph); }
+    .card-rename svg { width: 16px; height: 16px; }
+    .video-card:hover .card-rename, .card-rename:focus-visible { opacity: 1; }
+    .card-rename:hover { background: var(--md-surface-container-highest); }
+    @media (hover: none) { .card-rename { opacity: 1; } }
+    .title-input { flex: 1; min-width: 0; height: 32px; padding: 0 10px; border: none; border-radius: var(--shape-sm); background: var(--md-surface-container-highest); color: var(--md-on-surface); font: 600 15px var(--font); outline: none; box-shadow: inset 0 -2px 0 var(--md-primary); }
+    .auth-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .snackbar { position: fixed; left: 50%; bottom: 24px; z-index: 50; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 8px 0 16px; max-width: calc(100vw - 32px);
+      border-radius: var(--shape-sm); background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); font-size: 14px; box-shadow: var(--elev-3);
+      transform: translate(-50%, 120%); opacity: 0; transition: transform var(--duration-slow) var(--ease-emph-dec), opacity var(--duration-base) linear; }
+    .snackbar.show { transform: translate(-50%, 0); opacity: 1; }
+    .snackbar button { background: none; border: none; color: var(--md-inverse-primary); font: 600 14px var(--font); height: 36px; padding: 0 12px; border-radius: var(--shape-full); cursor: pointer; }
+    .hidden { display: none !important; }
+
+    /* ── Manage dialog (M3) ── */
+    .m3-dialog { margin: auto; width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: none; border-radius: var(--shape-xxl); background: var(--md-surface-container-high); color: var(--md-on-surface); box-shadow: var(--elev-3); overflow: auto; }
+    .m3-dialog::backdrop { background: rgb(0 0 0 / .32); }
+    .m-head { display: flex; align-items: center; gap: 12px; padding: 24px 24px 8px; }
+    .m-head-text { flex: 1; min-width: 0; }
+    .m-head h2 { font-size: 22px; font-weight: 650; letter-spacing: -.015em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .m-head p { font-size: 14px; color: var(--md-on-surface-variant); margin-top: 2px; }
+    .m-head .btn svg { width: 18px; height: 18px; }
+    .m-close { width: 40px; height: 40px; border: none; border-radius: 50%; background: none; color: var(--md-on-surface-variant); cursor: pointer; display: grid; place-items: center; }
+    .m-close svg { width: 20px; height: 20px; }
+    .m-tabs { position: relative; isolation: isolate; display: flex; gap: 0; margin: 8px 24px 0; padding: 4px; border-radius: var(--shape-full); background: var(--md-surface-container); }
+    .m-tabs .qm-indicator { background: var(--md-secondary-container); }
+    .m-tab { position: relative; z-index: 1; flex: 1; height: 40px; border: none; border-radius: var(--shape-full); background: transparent; color: var(--md-on-surface-variant); font: 600 14px var(--font); cursor: pointer; }
+    .m-tab.active { color: var(--md-on-secondary-container); }
+    .m-panel { padding: 20px 24px 24px; }
+    .m-loading { display: grid; place-items: center; padding: 32px; }
+    .m-loading .m3-loader { width: 40px; height: 40px; }
+    .m-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .m-stat { padding: 14px 12px; border-radius: var(--shape-lg); background: var(--md-surface-container-low); display: flex; flex-direction: column; gap: 4px; }
+    .m-stat b { font-size: 26px; font-weight: 650; letter-spacing: -.02em; color: var(--md-primary); }
+    .m-stat span { font-size: 12px; color: var(--md-on-surface-variant); }
+    .m-viewers { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+    .m-viewer { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--shape-md); background: var(--md-surface-container-low); }
+    .m-avatar { width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; display: grid; place-items: center; background: var(--md-tertiary-container); color: var(--md-on-tertiary-container); font-weight: 650; font-size: 14px; }
+    .m-viewer-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .m-viewer-info b { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .m-viewer-info span { font-size: 12px; color: var(--md-on-surface-variant); }
+    .m-watch { display: flex; align-items: center; gap: 8px; width: 160px; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--md-on-surface-variant); }
+    .m-watch-bar { flex: 1; height: 6px; border-radius: 99px; background: var(--md-secondary-container); overflow: hidden; }
+    .m-watch-bar i { display: block; height: 100%; border-radius: inherit; background: var(--md-primary); }
+    .m-note { color: var(--md-on-surface-variant); font-size: 15px; line-height: 1.5; padding: 16px 0 0; }
+    .m-fine { color: var(--md-on-surface-variant); font-size: 13px; line-height: 1.5; margin-top: 12px; }
+    .m-video { width: 100%; max-height: 42vh; border-radius: var(--shape-lg); background: #000; display: block; }
+    .m-range { position: relative; height: 32px; margin-top: 12px; }
+    .m-range-track { position: absolute; left: 0; right: 0; top: 13px; height: 6px; border-radius: 99px; background: var(--md-surface-container-highest); }
+    .m-range-track i { position: absolute; top: 0; bottom: 0; border-radius: inherit; background: var(--md-primary); }
+    .m-range input { position: absolute; inset: 0; width: 100%; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+    .m-range input::-webkit-slider-thumb { pointer-events: auto; -webkit-appearance: none; width: 8px; height: 32px; border-radius: 4px; background: var(--md-primary); cursor: ew-resize; box-shadow: 0 0 0 4px var(--md-surface-container-high); }
+    .m-range input::-moz-range-thumb { pointer-events: auto; width: 8px; height: 32px; border: none; border-radius: 4px; background: var(--md-primary); cursor: ew-resize; }
+    .m-trim-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .m-length { font-size: 14px; font-weight: 600; color: var(--md-primary); }
+    .m-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+    .m-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--md-outline-variant); }
+    .m-row > div { display: flex; flex-direction: column; gap: 2px; }
+    .m-row b { font-size: 15px; font-weight: 600; }
+    .m-row span { font-size: 13px; color: var(--md-on-surface-variant); }
+    .m-sub-row { border-bottom: none; padding-top: 0; }
+    .m-sub-row[hidden], .m-field[hidden] { display: none; }
+    .m-field { width: 100%; max-width: 320px; height: 44px; padding: 0 14px; border: none; border-radius: var(--shape-md); background: var(--md-surface-container-highest); color: var(--md-on-surface); font: 400 15px var(--font); outline: none; box-shadow: inset 0 -1px 0 var(--md-outline); }
+    .m-field:focus { box-shadow: inset 0 -2px 0 var(--md-primary); }
+    .m-select { width: auto; cursor: pointer; }
+    .card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .m-lock { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; margin-top: 14px; padding: 16px 18px; border-radius: var(--shape-lg); background: var(--md-primary-container); color: var(--md-on-primary-container); }
+    .m-lock[hidden] { display: none; }
+    .m-lock span { font-size: 14px; opacity: .85; }
+    .m-lock .btn { margin-top: 6px; }
+    @media (max-width: 600px) {
+      .m-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .m-watch { width: 110px; }
+      .m-head { flex-wrap: wrap; }
+    }
+
+    /* Mobile brand bar (drawer hidden) */
+    .mobile-bar { display: none; }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 0 16px 60px; }
+      .mobile-bar { display: flex; margin: 0 -16px 16px; }
+      .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sort-select { width: 100%; }
+      .sort-wrap { flex: 1 1 100%; }
+      .workspace-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-value { font-size: 32px; }
+      .page-header .btn { width: 100%; }
+    }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card-thumb svg { opacity: .82; } }
+    :root[data-theme="dark"] .card-thumb svg { opacity: .82; }
+  </style>
+  <link rel="stylesheet" href="/assets/calm.css" />
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <a href="/" class="sidebar-logo" aria-label="QuickCast home">
+      <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+      QuickCast
+    </a>
+
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="2" width="8" height="8" rx="1.5"/><rect x="14" y="2" width="8" height="8" rx="1.5"/><rect x="2" y="14" width="8" height="8" rx="1.5"/><rect x="14" y="14" width="8" height="8" rx="1.5"/></svg>
+        Recordings
+      </a>
+      <a href="/dashboard/settings" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+
+      <div class="nav-section-label">Plan</div>
+
+      <a href="/pricing" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Upgrade
+        <span class="nav-badge">Pro</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div id="quota-mini" class="quota-mini hidden">
+        <div class="quota-mini-label">
+          <span id="quota-mini-label">Recordings</span>
+          <span id="quota-mini-count" style="font-size:10px;color:var(--md-primary);font-weight:700"></span>
+        </div>
+        <div class="quota-track"><div id="quota-mini-fill" class="quota-fill" style="width:0%"></div></div>
+        <div class="quota-mini-label" style="margin:12px 0 10px">
+          <span id="quota-store-label">Storage</span>
+          <span id="quota-store-count" style="font-size:10px;color:var(--md-primary);font-weight:700"></span>
+        </div>
+        <div class="quota-track"><div id="quota-store-fill" class="quota-fill" style="width:0%"></div></div>
+      </div>
+      <div class="sidebar-user" id="sidebar-user">
+        <div class="user-avatar-wrap" id="user-avatar-wrap"><span id="user-initial">?</span></div>
+        <div class="user-info">
+          <div class="user-name-s" id="user-name">—</div>
+          <div class="user-plan" id="user-plan-label">Free plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+    <header class="qc-topbar mobile-bar">
+      <a href="/" class="qc-brand" aria-label="QuickCast home">
+        <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+        QuickCast
+      </a>
+      <a href="/dashboard/settings" class="btn btn-tonal btn-sm">Settings</a>
+    </header>
+
+    <!-- Auth wall -->
+    <div id="auth-wall" class="auth-wall hidden">
+      <div class="auth-art"><span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span></div>
+      <h2 id="auth-title">Sign in to see your recordings</h2>
+      <p id="auth-sub">Your recordings are saved to your account and accessible from any device.</p>
+      <div class="auth-actions">
+        <button class="btn btn-primary" id="btn-signin">Sign in with Google</button>
+        <a href="/" class="btn btn-outline">Get QuickCast free</a>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div id="main-content" class="hidden">
+      <div class="page-header">
+        <div>
+          <h1 class="greeting" id="greeting">Good morning</h1>
+          <p class="greeting-sub" id="recording-count"></p>
+        </div>
+        <a href="/" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Recording
+        </a>
+      </div>
+
+      <!-- Workspace card -->
+      <div class="workspace-card" id="workspace-card">
+        <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="workspace-icon"><span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span></div>
+        <div class="workspace-text">
+          <div class="workspace-title">Recording Workspace</div>
+          <div class="workspace-sub" id="workspace-sub">Install the QuickCast extension to start recording your screen and sharing instantly.</div>
+        </div>
+        <div class="workspace-actions">
+          <a href="/#how-it-works" class="btn btn-sm btn-primary" id="workspace-cta">Install Extension</a>
+          <a href="/pricing" class="btn btn-sm btn-outline">Upgrade</a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total recordings</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card" style="animation-delay:60ms">
+          <div class="stat-label">Total views</div>
+          <div class="stat-value" id="stat-views">—</div>
+          <div class="stat-sub">Across all videos</div>
+        </div>
+        <div class="stat-card" style="animation-delay:120ms">
+          <div class="stat-label">This month</div>
+          <div class="stat-value" id="stat-month">—</div>
+          <div class="stat-sub" id="stat-month-sub">Recordings</div>
+        </div>
+        <div class="stat-card" style="animation-delay:180ms">
+          <div class="stat-label">Latest recording</div>
+          <div class="stat-value stat-latest" id="stat-latest">—</div>
+          <div class="stat-sub" id="stat-latest-sub"></div>
+        </div>
+      </div>
+
+      <!-- Recordings section -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Recordings</span>
+          <div class="filter-tabs" role="group" aria-label="Filter recordings">
+            <button class="filter-tab active" data-filter="all">All</button>
+            <button class="filter-tab" data-filter="recent">Recent</button>
+            <button class="filter-tab" data-filter="shared">Shared</button>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="search" class="search-input" id="search-input" placeholder="Search recordings  ( / )" aria-label="Search recordings" />
+          </div>
+          <label class="sort-wrap">
+            <span class="visually-hidden">Sort recordings</span>
+            <select class="sort-select" id="sort-select">
+              <option value="new">Newest first</option>
+              <option value="old">Oldest first</option>
+              <option value="views">Most viewed</option>
+              <option value="long">Longest</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Skeleton loading -->
+        <div id="skeleton-grid" class="recordings-grid">
+          <div class="skel-card"><div class="skeleton skel-thumb"></div><div class="skel-body"><div class="skeleton skel-line skel-w75"></div><div class="skeleton skel-line skel-w50"></div><div class="skeleton skel-line skel-w40"></div></div></div>
+          <div class="skel-card"><div class="skeleton skel-thumb"></div><div class="skel-body"><div class="skeleton skel-line skel-w75"></div><div class="skeleton skel-line skel-w50"></div><div class="skeleton skel-line skel-w40"></div></div></div>
+          <div class="skel-card"><div class="skeleton skel-thumb"></div><div class="skel-body"><div class="skeleton skel-line skel-w75"></div><div class="skeleton skel-line skel-w50"></div><div class="skeleton skel-line skel-w40"></div></div></div>
+        </div>
+
+        <div id="videos-grid" class="recordings-grid hidden"></div>
+
+        <div id="load-error" class="empty-state hidden" role="alert">
+          <h3>Couldn't load your recordings</h3>
+          <p>Check your connection, then try again.</p>
+          <button class="btn btn-primary" id="btn-retry">Try again</button>
+        </div>
+
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-art"><span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span></div>
+          <h3>No recordings yet</h3>
+          <p>Use the QuickCast Chrome extension to record your screen and share instantly with a link.</p>
+          <a href="/" class="btn btn-primary">Get the extension</a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<dialog id="manage" class="m3-dialog" aria-labelledby="m-title">
+  <header class="m-head">
+    <div class="m-head-text"><h2 id="m-title"></h2><p id="m-sub"></p></div>
+    <button class="btn btn-tonal btn-sm" id="m-download">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+      <span id="m-download-label">Download</span>
+    </button>
+    <button class="icon-btn m-close" id="m-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </header>
+  <div class="m-tabs" role="tablist" aria-label="Recording settings">
+    <button class="m-tab" role="tab" data-tab="insights" aria-controls="m-insights">Insights</button>
+    <button class="m-tab" role="tab" data-tab="trim" aria-controls="m-trim">Trim</button>
+    <button class="m-tab" role="tab" data-tab="privacy" aria-controls="m-privacy">Privacy</button>
+  </div>
+
+  <section id="m-insights" class="m-panel" role="tabpanel"><div id="m-insights-body"></div></section>
+
+  <section id="m-trim" class="m-panel" role="tabpanel" hidden>
+    <video id="m-video" class="m-video" controls playsinline preload="metadata"></video>
+    <div class="m-range" aria-label="Trim range">
+      <div class="m-range-track"><i id="m-range-fill"></i></div>
+      <input type="range" id="m-start" min="0" value="0" aria-label="Start" />
+      <input type="range" id="m-end" min="0" value="0" aria-label="End" />
+    </div>
+    <div class="m-trim-row">
+      <button class="btn btn-tonal btn-sm" id="m-set-start">Start here · <span id="m-start-label">0:00</span></button>
+      <span id="m-length" class="m-length"></span>
+      <button class="btn btn-tonal btn-sm" id="m-set-end">End here · <span id="m-end-label">0:00</span></button>
+    </div>
+    <p class="m-fine">Trimming hides the cut parts from viewers; your original file stays intact, so you can undo it any time. Downloads are the full recording.</p>
+    <div class="m-actions">
+      <button class="btn btn-text" id="m-trim-reset">Reset</button>
+      <button class="btn btn-tonal" id="m-preview">Preview</button>
+      <button class="btn btn-primary" id="m-trim-save">Save trim</button>
+    </div>
+  </section>
+
+  <section id="m-privacy" class="m-panel" role="tabpanel" hidden>
+    <div class="m-lock" id="m-pro-note" hidden><b>Password &amp; expiring links are part of Pro</b><span>On Free you can still choose whether viewers can download.</span><a class="btn btn-primary btn-sm" href="/pricing/">Upgrade to Pro</a></div>
+    <div class="m-row">
+      <div><b id="lbl-pass">Password protect</b><span>Viewers must enter the password to watch</span></div>
+      <label class="toggle"><input type="checkbox" role="switch" id="m-pass-on" aria-labelledby="lbl-pass" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+    </div>
+    <div class="m-row m-sub-row" id="m-pass-row" hidden>
+      <label class="visually-hidden" for="m-pass">Password</label>
+      <input type="text" id="m-pass" class="m-field" maxlength="64" autocomplete="off" />
+    </div>
+    <div class="m-row">
+      <div><b><label for="m-exp">Link expires</label></b><span id="m-exp-note">After this, the link stops working</span></div>
+      <select id="m-exp" class="m-field m-select">
+        <option value="never">Never</option>
+        <option value="1">In 1 day</option>
+        <option value="7">In 7 days</option>
+        <option value="30">In 30 days</option>
+        <option value="custom">On a date…</option>
+      </select>
+    </div>
+    <div class="m-row m-sub-row"><input type="datetime-local" id="m-exp-date" class="m-field" aria-label="Expiry date" hidden /></div>
+    <div class="m-row">
+      <div><b id="lbl-dl">Allow downloads</b><span>Show a Download button to viewers</span></div>
+      <label class="toggle"><input type="checkbox" role="switch" id="m-dl" aria-labelledby="lbl-dl" checked /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+    </div>
+    <div class="m-actions"><button class="btn btn-primary" id="m-privacy-save">Save privacy</button></div>
+  </section>
+</dialog>
+
+<div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+<script src="/assets/motion.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/manage.js"></script>
+<script src="/assets/dashboard.js"></script>
+</body>
+</html>

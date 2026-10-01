@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Settings — QuickCast</title>
+  <meta name="theme-color" content="#FCF8FF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#131318" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" />
+  <link rel="stylesheet" href="/assets/m3.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-128.png" />
+  <script src="/assets/theme.js"></script>
+  <style>
+    :root { --sidebar-w: 280px; }
+    body { font-size: 14px; }
+    .app { display: flex; min-height: 100vh; }
+    .main { margin-left: var(--sidebar-w); flex: 1; min-width: 0; padding: 32px 40px 80px; max-width: calc(1120px + var(--sidebar-w)); }
+    .page-header { margin-bottom: 32px; animation: m3-enter var(--duration-long) var(--ease-emph-dec) both; }
+    .page-title { font-size: clamp(32px, 4vw, 48px); font-weight: 650; letter-spacing: -.03em; line-height: 1.1; font-variation-settings: "opsz" 96; }
+    .page-sub { font-size: 16px; color: var(--md-on-surface-variant); margin-top: 8px; }
+
+    /* ── Layout ── */
+    .settings-layout { display: grid; grid-template-columns: 240px 1fr; gap: 32px; align-items: start; }
+    .settings-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 24px; }
+    .settings-nav-item {
+      position: relative; overflow: hidden; isolation: isolate;
+      display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px;
+      border-radius: var(--shape-full); border: none; background: none; cursor: pointer;
+      font: 500 14px var(--font); color: var(--md-on-surface-variant); text-align: left;
+      transition: background var(--duration-base) var(--ease-emph), color var(--duration-base) var(--ease-emph);
+    }
+    .settings-nav-item::before { content: ""; position: absolute; inset: 0; z-index: -1; background: currentColor; opacity: 0; transition: opacity var(--duration-fast) linear; }
+    .settings-nav-item:hover::before { opacity: .08; }
+    .settings-nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .settings-nav-item.active { background: var(--md-secondary-container); color: var(--md-on-secondary-container); font-weight: 600; }
+
+    /* ── Panels ── */
+    .settings-panel { display: none; }
+    .settings-panel.active { display: block; animation: m3-enter var(--duration-slow) var(--ease-emph-dec) both; }
+    .settings-section { background: var(--md-surface-container-low); border-radius: var(--shape-xl); overflow: hidden; margin-bottom: 16px; }
+    .settings-section-header { padding: 20px 24px 8px; font-size: 14px; font-weight: 600; color: var(--md-primary); }
+    .settings-section.danger { background: color-mix(in srgb, var(--md-error-container) 35%, var(--md-surface-container-low)); }
+    .settings-section.danger .settings-section-header { color: var(--md-error); }
+    .settings-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; min-height: 72px; }
+    .settings-row + .settings-row { border-top: 1px solid var(--md-outline-variant); }
+    .settings-row-info { flex: 1; min-width: 0; }
+    .settings-row-label { font-size: 16px; font-weight: 500; color: var(--md-on-surface); }
+    .settings-row-desc { font-size: 14px; color: var(--md-on-surface-variant); margin-top: 2px; }
+    .settings-row-control { flex-shrink: 0; }
+
+    /* Select + input (M3 filled fields, pill-shaped to match the round philosophy) */
+    .settings-select, .settings-input {
+      height: 48px; padding: 0 44px 0 18px; border: none; border-radius: var(--shape-lg);
+      background: var(--md-surface-container-highest); color: var(--md-on-surface);
+      font: 400 15px var(--font); outline: none; cursor: pointer; appearance: none;
+      box-shadow: inset 0 -1px 0 var(--md-outline);
+      transition: box-shadow var(--duration-base) var(--ease-emph), background var(--duration-base) var(--ease-emph);
+    }
+    .settings-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='%23787680'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+    }
+    .settings-input { padding: 0 18px; min-width: 220px; cursor: text; }
+    .settings-select:hover, .settings-input:hover { background-color: color-mix(in srgb, var(--md-on-surface) 6%, var(--md-surface-container-highest)); }
+    .settings-select:focus, .settings-input:focus { box-shadow: inset 0 -2px 0 var(--md-primary); }
+
+    /* Account */
+    .account-avatar-row { display: flex; align-items: center; gap: 20px; padding: 28px 24px; background: var(--md-primary-container); color: var(--md-on-primary-container); }
+    .account-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--md-primary); color: var(--md-on-primary); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 600; overflow: hidden; flex-shrink: 0; }
+    .account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .account-avatar-info h3 { font-size: 24px; font-weight: 600; letter-spacing: -.01em; }
+    .account-avatar-info p { font-size: 15px; opacity: .8; margin-top: 2px; }
+
+    .plan-badge { display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: var(--shape-full); font-size: 13px; font-weight: 600; }
+    .plan-badge.free { background: var(--md-surface-container-lowest); color: var(--md-on-surface-variant); }
+    .plan-badge.pro { background: var(--md-primary); color: var(--md-on-primary); }
+    .plan-badge.lifetime { background: var(--md-tertiary); color: var(--md-on-tertiary); }
+
+    .theme-saved { font-size: 13px; color: var(--md-primary); font-weight: 500; opacity: 0; transition: opacity var(--duration-base) var(--ease-emph); margin-right: 12px; }
+    .theme-saved.show { opacity: 1; }
+
+    .name-control { display: flex; gap: 8px; align-items: center; }
+    .sync-note { font-size: 14px; color: var(--md-on-surface-variant); margin: 0 4px 12px; }
+    .stat-chip { display: inline-flex; align-items: center; height: 32px; padding: 0 14px; border-radius: var(--shape-full); background: var(--md-primary-container); color: var(--md-on-primary-container); font-size: 14px; font-weight: 600; }
+    .quota-bar { height: 8px; border-radius: var(--shape-full); background: var(--md-secondary-container); margin-top: 12px; max-width: 360px; overflow: hidden; }
+    .quota-bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--md-primary); transition: width var(--duration-long) var(--ease-emph); }
+    .quota-bar.warn i { background: var(--md-tertiary); }
+    .settings-panels[aria-busy="true"] .settings-row-control { opacity: .5; pointer-events: none; }
+
+    /* Save feedback (M3 snackbar) */
+    .snackbar { position: fixed; left: 50%; bottom: 24px; z-index: 50; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 8px 0 16px; max-width: calc(100vw - 32px);
+      border-radius: var(--shape-sm); background: var(--md-inverse-surface, #313033); color: var(--md-inverse-on-surface, #F4EFF4); font-size: 14px; box-shadow: var(--elev-3);
+      transform: translate(-50%, 120%); opacity: 0; transition: transform var(--duration-slow) var(--ease-emph-dec), opacity var(--duration-base) linear; }
+    .snackbar.show { transform: translate(-50%, 0); opacity: 1; }
+    .snackbar button { background: none; border: none; color: var(--md-inverse-primary, #C7BFFF); font: 600 14px var(--font); height: 36px; padding: 0 12px; border-radius: var(--shape-full); cursor: pointer; }
+    .snackbar:empty { display: none; }
+
+    /* Signed-out state */
+    .signin-wall { text-align: center; padding: 64px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .signin-wall h2 { font-size: 32px; font-weight: 650; letter-spacing: -.03em; }
+    .signin-wall p { font-size: 16px; color: var(--md-on-surface-variant); max-width: 380px; line-height: 1.6; }
+    .signin-wall .qc-logo { --size: 112px; margin-bottom: 8px; }
+    .hidden { display: none !important; }
+
+    .mobile-bar { display: none; }
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 0 16px 60px; }
+      .mobile-bar { display: flex; margin: 0 -16px 16px; }
+      .settings-layout { grid-template-columns: 1fr; gap: 16px; }
+      .settings-nav { position: static; flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
+      .settings-nav-item { flex-shrink: 0; }
+    }
+    @media (max-width: 600px) {
+      .settings-row { flex-wrap: wrap; }
+      .name-control { width: 100%; }
+      .settings-input { min-width: 0; width: 100%; }
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/calm.css" />
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <a href="/" class="sidebar-logo" aria-label="QuickCast home">
+      <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+      QuickCast
+    </a>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="2" width="8" height="8" rx="1.5"/><rect x="14" y="2" width="8" height="8" rx="1.5"/><rect x="2" y="14" width="8" height="8" rx="1.5"/><rect x="14" y="14" width="8" height="8" rx="1.5"/></svg>
+        Recordings
+      </a>
+      <a href="/dashboard/settings" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+      <a href="/pricing" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Upgrade
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-user" id="sidebar-user">
+        <div class="user-avatar-wrap" id="user-avatar-wrap"><span id="user-initial">?</span></div>
+        <div class="user-info">
+          <div class="user-name-s" id="user-name">—</div>
+          <div class="user-plan" id="user-plan-label">Free plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="qc-topbar mobile-bar">
+      <a href="/" class="qc-brand" aria-label="QuickCast home">
+        <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+        QuickCast
+      </a>
+      <a href="/dashboard" class="btn btn-tonal btn-sm">Recordings</a>
+    </header>
+    <div class="page-header">
+      <h1 class="page-title">Settings</h1>
+      <p class="page-sub">Manage your account, recording preferences, and billing.</p>
+    </div>
+
+    <div class="signin-wall hidden" id="signin-wall">
+      <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+      <h2>Sign in to change settings</h2>
+      <p>Your preferences are saved to your QuickCast account, so the extension uses them on every computer.</p>
+      <button class="btn btn-primary btn-lg" id="btn-signin">Sign in with Google</button>
+    </div>
+
+    <div class="settings-layout" id="settings-layout">
+      <!-- Left nav -->
+      <nav class="settings-nav" aria-label="Settings sections" role="tablist">
+        <button class="settings-nav-item active" data-panel="account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.58-7 8-7s8 3 8 7"/></svg>
+          Account
+        </button>
+        <button class="settings-nav-item" data-panel="recording">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+          Recording
+        </button>
+        <button class="settings-nav-item" data-panel="audio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="9" y="1" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0M12 17v4M9 21h6"/></svg>
+          Audio
+        </button>
+        <button class="settings-nav-item" data-panel="appearance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          Appearance
+        </button>
+        <button class="settings-nav-item" data-panel="storage">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Storage
+        </button>
+        <button class="settings-nav-item" data-panel="billing">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+          Plan &amp; Billing
+        </button>
+      </nav>
+
+      <!-- Panels -->
+      <div class="settings-panels" id="settings-panels" aria-busy="true">
+
+        <!-- Account -->
+        <div class="settings-panel active" id="panel-account">
+          <div class="settings-section">
+            <div class="account-avatar-row">
+              <div class="account-avatar" id="account-avatar"><span id="account-initial">?</span></div>
+              <div class="account-avatar-info">
+                <h3 id="account-name">—</h3>
+                <p id="account-email">—</p>
+                <div style="margin-top:8px">
+                  <span class="plan-badge free" id="plan-badge">Free</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-header">Profile</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label"><label for="display-name-input">Display name</label></div>
+                <div class="settings-row-desc">Shown on shared recordings</div>
+              </div>
+              <div class="settings-row-control name-control">
+                <input class="settings-input" id="display-name-input" placeholder="Your name" maxlength="60" autocomplete="name" />
+                <button class="btn btn-sm btn-primary" id="btn-save-name" disabled>Save</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section danger">
+            <div class="settings-section-header">Danger zone</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Sign out</div>
+                <div class="settings-row-desc">Sign out of QuickCast on this device</div>
+              </div>
+              <div class="settings-row-control">
+                <button class="btn btn-sm btn-outline" id="btn-sign-out">Sign out</button>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Delete account</div>
+                <div class="settings-row-desc">Permanently delete your account and all recordings</div>
+              </div>
+              <div class="settings-row-control">
+                <button class="btn btn-sm btn-danger" id="btn-delete-account">Delete account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recording -->
+        <div class="settings-panel" id="panel-recording">
+          <p class="sync-note">These apply to the QuickCast extension on every computer you sign in to.</p>
+          <div class="settings-section">
+            <div class="settings-section-header">Video quality</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label"><label for="sel-res">Resolution</label></div>
+                <div class="settings-row-desc">Higher means larger files. Free records up to 720p, Pro up to 1080p, Studio up to 4K (needs a 4K screen)</div>
+              </div>
+              <div class="settings-row-control">
+                <select class="settings-select" id="sel-res" data-pref="resolution">
+                  <option value="2160">4K (Studio)</option>
+                  <option value="1080">1080p (recommended)</option>
+                  <option value="720">720p</option>
+                  <option value="480">480p</option>
+                </select>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label"><label for="sel-fps">Frame rate</label></div>
+                <div class="settings-row-desc">60 fps suits fast motion, like demos with scrolling</div>
+              </div>
+              <div class="settings-row-control">
+                <select class="settings-select" id="sel-fps" data-pref="fps">
+                  <option value="30">30 fps</option>
+                  <option value="60">60 fps</option>
+                  <option value="24">24 fps</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-header">Behavior</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="lbl-countdown">Show countdown before recording</div>
+                <div class="settings-row-desc">3-second countdown to get ready</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle"><input type="checkbox" role="switch" data-pref="countdown" aria-labelledby="lbl-countdown" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="lbl-autocopy">Auto-copy link when done</div>
+                <div class="settings-row-desc">The share link is copied as soon as the upload finishes</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle"><input type="checkbox" role="switch" data-pref="autoCopy" aria-labelledby="lbl-autocopy" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="lbl-viewer">Open viewer after recording</div>
+                <div class="settings-row-desc">Opens your new recording in a tab</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle"><input type="checkbox" role="switch" data-pref="openViewer" aria-labelledby="lbl-viewer" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio -->
+        <div class="settings-panel" id="panel-audio">
+          <div class="settings-section">
+            <div class="settings-section-header">Microphone</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Input device</div>
+                <div class="settings-row-desc">QuickCast uses the microphone Chrome is set to. Change it in Chrome → Settings → Privacy and security → Site settings → Microphone.</div>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="lbl-micdef">Turn on the mic by default</div>
+                <div class="settings-row-desc">The microphone switch starts on in the extension</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle"><input type="checkbox" role="switch" data-pref="micDefault" aria-labelledby="lbl-micdef" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="lbl-noise">Noise suppression</div>
+                <div class="settings-row-desc">Reduces fan hum and keyboard noise</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle"><input type="checkbox" role="switch" data-pref="noiseSuppression" aria-labelledby="lbl-noise" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-header">Tab recording</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="lbl-tabaudio">Include tab audio</div>
+                <div class="settings-row-desc">Records sound playing in the tab, like videos or calls</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle"><input type="checkbox" role="switch" data-pref="tabAudio" aria-labelledby="lbl-tabaudio" /><span class="toggle-track"><span class="toggle-thumb"></span></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance -->
+        <div class="settings-panel" id="panel-appearance">
+          <div class="settings-section">
+            <div class="settings-section-header">Theme</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label"><label for="theme-select">Color theme</label></div>
+                <div class="settings-row-desc">Applies to the website on this device</div>
+              </div>
+              <div class="settings-row-control">
+                <span class="theme-saved" id="theme-saved" aria-live="polite"></span>
+                <select class="settings-select" id="theme-select">
+                  <option value="system">System (default)</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-header">Webcam bubble</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Bubble size</div>
+              </div>
+              <div class="settings-row-control">
+                <select class="settings-select" id="sel-bsize" data-pref="bubbleSize" aria-label="Bubble size">
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Bubble position</div>
+              </div>
+              <div class="settings-row-control">
+                <select class="settings-select" id="sel-bpos" data-pref="bubblePosition" aria-label="Bubble position">
+                  <option value="br">Bottom right</option>
+                  <option value="bl">Bottom left</option>
+                  <option value="tr">Top right</option>
+                  <option value="tl">Top left</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storage -->
+        <div class="settings-panel" id="panel-storage">
+          <div class="settings-section">
+            <div class="settings-section-header">Cloud storage</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Space used by your recordings</div>
+                <div class="settings-row-desc" id="storage-used">Calculating…</div>
+              </div>
+              <div class="settings-row-control">
+                <span id="storage-pct" class="stat-chip">—</span>
+              </div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Free up space</div>
+                <div class="settings-row-desc">Delete recordings you no longer need from your library</div>
+              </div>
+              <div class="settings-row-control">
+                <a href="/dashboard" class="btn btn-sm btn-tonal">Manage recordings</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing -->
+        <div class="settings-panel" id="panel-billing">
+          <div class="settings-section">
+            <div class="settings-section-header">Current Plan</div>
+            <div class="settings-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label" id="billing-plan-name">Free</div>
+                <div class="settings-row-desc" id="billing-plan-desc">25 recordings a month</div>
+              </div>
+              <div class="settings-row-control">
+                <a href="/pricing/" class="btn btn-sm btn-primary" id="billing-cta">Upgrade to Pro</a>
+                <button class="btn btn-sm btn-outline hidden" id="billing-cancel">Cancel subscription</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-header">Usage</div>
+            <div class="settings-row" id="quota-row">
+              <div class="settings-row-info">
+                <div class="settings-row-label">Recordings this month</div>
+                <div class="settings-row-desc" id="quota-desc">Loading…</div>
+                <div class="quota-bar" aria-hidden="true"><i id="quota-bar-fill"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+<script src="/assets/motion.js"></script>
+<script src="/assets/auth.js"></script>
+<script src="/assets/settings.js"></script>
+</body>
+</html>

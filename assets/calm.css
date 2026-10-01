@@ -1,0 +1,363 @@
+/* calm.css — minimal Material You + premium motion. Load LAST on every page.
+   Mirrored in extension/calm.css.
+   Part A (sections 1–4) switches off every legacy decorative effect (pops,
+   confetti, aurora, shine, parallax, bouncy morphs, gradient text).
+   Part B (section 5) adds back a curated M3 motion set: every animation shows a
+   change of state, uses emphasized easing at 200–450 ms, moves 4–12 px or
+   scales 0.96→1 (never overshoots), and only status indicators loop. */
+
+/* 1. No animation by default … */
+*, *::before, *::after { animation: none !important; }
+
+/* … and transitions only on color/opacity/elevation unless a rule below opts in. */
+*, *::before, *::after {
+  transition-property: background-color, color, border-color, opacity, box-shadow, fill, stroke !important;
+  transition-duration: 150ms !important;
+  transition-timing-function: cubic-bezier(.2, 0, 0, 1) !important;
+}
+
+/* 2. Decorative layers off */
+.aurora, .qc-confetti, .auth-orbit, .rec-stage::before, .rec-stage::after,
+.shine::after, .shine::before { display: none !important; }
+
+/* 3. Shapes stay put on hover/press (no pill→square morphs, tilts or bounces) */
+.btn:active, .btn-lg:active, .btn-xl:active, .btn:active:not(:disabled), .btn-lg:active:not(:disabled),
+.btn-perm-allow:active, .icon-btn:active, .source-opt:active, .card-btn:active,
+.btn-record:active:not(:disabled), .page-header .btn:active { border-radius: var(--shape-full) !important; }
+.stat-card:hover { border-radius: var(--shape-xl) !important; }
+.video-card:hover .card-thumb { border-radius: calc(var(--shape-xl) - 8px) !important; }
+.toggle-label:hover .icon-sm { transform: none !important; }
+.feat:hover, .pricing-card:hover { transform: none !important; }
+
+/* 4. Solid color instead of gradients */
+.capture-heading, .auth-title, h1 {
+  background: none !important; -webkit-background-clip: border-box !important; background-clip: border-box !important;
+  color: var(--md-on-surface) !important; -webkit-text-fill-color: currentColor !important;
+}
+.source-opt.active { background: transparent !important; color: var(--md-on-primary) !important; box-shadow: none !important; }
+.source-opt:not(.active) { background: var(--md-surface-container-high) !important; }
+.quota-fill { background: var(--md-primary); }
+.btn-record { background: var(--md-primary) !important; color: var(--md-on-primary) !important; box-shadow: none; }
+.btn-record:hover:not(:disabled) { box-shadow: var(--elev-1) !important; }
+.btn-record:disabled { background: color-mix(in srgb, var(--md-on-surface) 12%, transparent) !important; color: color-mix(in srgb, var(--md-on-surface) 38%, transparent) !important; }
+.toggle-label .icon-sm, .options-row .toggle-label .icon-sm {
+  background: var(--md-surface-container-highest) !important; color: var(--md-on-surface-variant) !important;
+}
+
+/* ═══ 5. Premium motion (curated) ═══════════════════════════════════════ */
+:root {
+  --qm-emph: cubic-bezier(.2, 0, 0, 1);         /* M3 emphasized */
+  --qm-decel: cubic-bezier(.05, .7, .1, 1);     /* emphasized decelerate: arriving */
+  --qm-accel: cubic-bezier(.3, 0, .8, .15);     /* emphasized accelerate: leaving */
+}
+@keyframes qm-fade    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes qm-rise    { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes qm-settle  { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes qm-grow    { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes qm-draw    { to { stroke-dashoffset: 0; } }
+@keyframes qm-spin    { to { transform: rotate(360deg); } }
+@keyframes qm-blink   { 50% { opacity: .35; } }
+@keyframes qm-ring    { from { opacity: .35; transform: scale(.85); } to { opacity: 0; transform: scale(1.35); } }
+@keyframes qm-shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+@keyframes qm-float   { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes qm-eyes    { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+
+/* ── Screens (popup screens, settings panels, permission states): fade + 8px rise ── */
+.screen:not(.hidden), .settings-panel.active, .state { animation: qm-rise 320ms var(--qm-decel) both !important; }
+
+/* Popup home: sections arrive in order, 40 ms apart */
+#screen-idle:not(.hidden) { animation: qm-fade 200ms linear both !important; }
+#screen-idle:not(.hidden) > * { animation: qm-rise 380ms var(--qm-decel) both !important; }
+#screen-idle:not(.hidden) > :nth-child(2) { animation-delay: 40ms !important; }
+#screen-idle:not(.hidden) > :nth-child(3) { animation-delay: 80ms !important; }
+#screen-idle:not(.hidden) > :nth-child(4) { animation-delay: 120ms !important; }
+#screen-idle:not(.hidden) > :nth-child(5) { animation-delay: 160ms !important; }
+#screen-idle:not(.hidden) > :nth-child(6) { animation-delay: 200ms !important; }
+
+/* ── Source picker: one indicator glides between Tab / Screen / Window ── */
+.source-picker { position: relative; isolation: isolate; }
+.source-picker::after {
+  content: ""; position: absolute; z-index: 0; top: 0; bottom: 0; left: 0;
+  width: calc((100% - 6px) / 3); border-radius: var(--shape-xl); background: var(--md-primary);
+  transform: translateX(calc(var(--qm-i, 0) * (100% + 3px)));
+  transition: transform 380ms var(--qm-emph) !important;
+}
+.source-opt { z-index: 1; }
+.source-opt.active { transition-delay: 60ms !important; }
+.source-opt svg { transition-property: transform !important; transition-duration: 300ms !important; transform: none !important; }
+.source-opt.active svg { transform: translateY(-2px) !important; }
+
+/* ── Switches: thumb grows and slides; the check fades in ── */
+.toggle-thumb {
+  transition-property: transform, width, height, margin, left, background-color !important;
+  transition-duration: 300ms !important; transition-timing-function: var(--qm-emph) !important;
+}
+.toggle-thumb::after { transition-property: opacity, transform !important; transition-duration: 200ms !important; }
+.toggle-track { transition-duration: 250ms !important; }
+
+/* ── Progress: bars fill smoothly when data arrives ── */
+.quota-fill, #quota-mini-fill, .quota-bar i {
+  transition-property: width, background-color !important; transition-duration: 700ms !important;
+  transition-timing-function: var(--qm-decel) !important;
+}
+
+/* ── Buttons: quiet 2% press + state layers ── */
+.btn, .card-btn, .icon-btn, .btn-perm-allow {
+  transition-property: background-color, color, border-color, box-shadow, transform, opacity !important;
+  transition-duration: 200ms !important;
+}
+.btn:active:not(:disabled), .card-btn:active, .icon-btn:active, .btn-perm-allow:active { transform: scale(.98); transition-duration: 80ms !important; }
+
+/* Record button: the dot becomes a rounded square on hover ("record" → "stop") */
+.rec-glyph { transform: none !important; transition-property: border-radius !important; transition-duration: 250ms !important; }
+.btn-record:hover:not(:disabled) .rec-glyph { border-radius: 3px !important; }
+
+/* ── Recording: core settles in; one soft ring pulses as the live status ── */
+#screen-recording:not(.hidden) .rec-core, #screen-paused:not(.hidden) .rec-core { animation: qm-settle 450ms var(--qm-decel) both !important; }
+.rec-ring { animation: qm-ring 2.4s var(--qm-decel) infinite !important; }
+.rec-ring.r2 { display: none; }
+.rec-dot, .dot { animation: qm-blink 1.6s ease-in-out infinite !important; }
+#screen-recording:not(.hidden) .rec-header, #screen-paused:not(.hidden) .rec-header { animation: qm-rise 360ms var(--qm-decel) 80ms both !important; }
+#screen-recording:not(.hidden) .rec-actions, #screen-paused:not(.hidden) .rec-actions { animation: qm-rise 360ms var(--qm-decel) 140ms both !important; }
+
+/* ── Saving: M3 circular indicator ── */
+.m3-loader, .upload-visual .m3-loader {
+  border: 0 !important; border-radius: 50% !important;
+  -webkit-mask: none !important; mask: none !important;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='21' fill='none' stroke='%23E4DFF9' stroke-width='4'/%3E%3Ccircle cx='25' cy='25' r='21' fill='none' stroke='%235646E0' stroke-width='4' stroke-linecap='round' stroke-dasharray='70 132'/%3E%3C/svg%3E") center / 100% 100% no-repeat !important;
+  animation: qm-spin 1.1s linear infinite !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .m3-loader, :root:not([data-theme="light"]) .upload-visual .m3-loader {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='21' fill='none' stroke='%232F2B3A' stroke-width='4'/%3E%3Ccircle cx='25' cy='25' r='21' fill='none' stroke='%23C7BFFF' stroke-width='4' stroke-linecap='round' stroke-dasharray='70 132'/%3E%3C/svg%3E") !important;
+  }
+}
+:root[data-theme="dark"] .m3-loader, :root[data-theme="dark"] .upload-visual .m3-loader {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='21' fill='none' stroke='%232F2B3A' stroke-width='4'/%3E%3Ccircle cx='25' cy='25' r='21' fill='none' stroke='%23C7BFFF' stroke-width='4' stroke-linecap='round' stroke-dasharray='70 132'/%3E%3C/svg%3E") !important;
+}
+#screen-uploading:not(.hidden) .upload-label { animation: qm-fade 400ms linear 150ms both !important; }
+
+/* ── Done: badge grows in, the check draws itself, then the link row arrives ── */
+.done-check { stroke-dasharray: 26; stroke-dashoffset: 26; }
+#screen-done:not(.hidden) .done-shape   { animation: qm-grow 420ms var(--qm-decel) both !important; }
+#screen-done:not(.hidden) .done-check   { animation: qm-draw 380ms var(--qm-emph) 220ms forwards !important; }
+#screen-done:not(.hidden) .done-title   { animation: qm-rise 360ms var(--qm-decel) 160ms both !important; }
+#screen-done:not(.hidden) .share-row    { animation: qm-rise 360ms var(--qm-decel) 220ms both !important; }
+#screen-done:not(.hidden) .done-actions { animation: qm-rise 360ms var(--qm-decel) 280ms both !important; }
+
+/* ── Error: icon settles, message follows ── */
+#screen-error:not(.hidden) .error-icon { animation: qm-settle 360ms var(--qm-decel) both !important; }
+#screen-error:not(.hidden) .error-msg  { animation: qm-rise 360ms var(--qm-decel) 80ms both !important; }
+
+/* ── Setup + permissions page: rows arrive in order ── */
+.devices li, .perm-card { animation: qm-rise 380ms var(--qm-decel) both !important; }
+.devices li:nth-child(2), .perm-card:nth-child(2) { animation-delay: 50ms !important; }
+.devices li:nth-child(3), .perm-card:nth-child(3) { animation-delay: 100ms !important; }
+main.card, body > .card { animation: qm-settle 450ms var(--qm-decel) both !important; }
+
+/* ── Website: sections reveal once as they scroll into view ── */
+.js [data-reveal] {
+  opacity: 0; transform: translateY(12px);
+  transition-property: opacity, transform !important; transition-duration: 600ms !important;
+  transition-timing-function: var(--qm-decel) !important;
+}
+.js [data-reveal].in { opacity: 1; transform: none; }
+.hero-copy > * { animation: qm-rise 520ms var(--qm-decel) both !important; }
+.hero-copy > :nth-child(2) { animation-delay: 60ms !important; }
+.hero-copy > :nth-child(3) { animation-delay: 120ms !important; }
+.hero-copy > :nth-child(4) { animation-delay: 180ms !important; }
+.hero-copy > :nth-child(5) { animation-delay: 240ms !important; }
+.stage .mock { animation: qm-settle 600ms var(--qm-decel) 200ms both !important; }
+.live-dot { animation: qm-blink 1.6s ease-in-out infinite !important; }
+
+/* Landing mock: its selector glides Tab → Screen → Window (driven by --qm-i from JS) */
+.mock-seg { position: relative; isolation: isolate; }
+.mock-seg::after {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 0; width: calc((100% - 8px) / 3);
+  border-radius: var(--shape-full); background: var(--md-primary);
+  transform: translateX(calc(var(--qm-i, 0) * (100% + 4px))); transition: transform 450ms var(--qm-emph) !important;
+}
+.mock-seg span, .mock-seg span:first-child { background: transparent !important; color: var(--md-on-surface-variant) !important; transition-duration: 250ms !important; }
+.mock-seg span.on { color: var(--md-on-primary) !important; }
+.mock-seg span:not(.on) svg { display: none; }
+
+/* Cards lift by elevation only */
+.feat, .plan, .pricing-card, .stat-card, .video-card { transition-property: box-shadow, background-color !important; transition-duration: 250ms !important; }
+.feat:hover, .plan:hover, .pricing-card:hover { box-shadow: var(--elev-2); }
+.feat-icon .glyph { transition-property: transform !important; transition-duration: 300ms !important; }
+.feat:hover .feat-icon .glyph { transform: translateY(-2px); }
+
+/* ── Dashboard ── */
+.greeting, .page-header, .workspace-card { animation: qm-rise 420ms var(--qm-decel) both !important; }
+.stat-card { animation: qm-rise 420ms var(--qm-decel) both !important; }
+.stat-card:nth-child(2) { animation-delay: 50ms !important; }
+.stat-card:nth-child(3) { animation-delay: 100ms !important; }
+.stat-card:nth-child(4) { animation-delay: 150ms !important; }
+.video-card { animation: qm-rise 400ms var(--qm-decel) both !important; }
+.video-card:nth-child(2) { animation-delay: 30ms !important; }
+.video-card:nth-child(3) { animation-delay: 60ms !important; }
+.video-card:nth-child(4) { animation-delay: 90ms !important; }
+.video-card:nth-child(5) { animation-delay: 120ms !important; }
+.video-card:nth-child(6) { animation-delay: 150ms !important; }
+.video-card:nth-child(n+7) { animation-delay: 180ms !important; }
+.video-card:hover { box-shadow: var(--elev-2); }
+.card-thumb svg { transition-property: transform !important; transition-duration: 450ms !important; }
+.video-card:hover .card-thumb svg { transform: scale(1.03) !important; }
+.card-play-btn { transition-property: opacity, transform !important; transition-duration: 250ms !important; transform: scale(.9) !important; }
+.video-card:hover .card-play-btn, .card-thumb:focus-visible .card-play-btn { transform: none !important; border-radius: 50% !important; }
+.empty-state:not(.hidden), .auth-wall:not(.hidden), .signin-wall:not(.hidden) { animation: qm-rise 420ms var(--qm-decel) both !important; }
+.skeleton { animation: qm-shimmer 1.6s ease-in-out infinite !important; }
+
+/* Snackbar slides up from the bottom edge */
+.snackbar { transition-property: transform, opacity !important; transition-duration: 300ms !important; transition-timing-function: var(--qm-decel) !important; }
+
+
+/* ═══ 6. Material You motion, round two ═════════════════════════════════ */
+
+/* Fade through between popup screens: outgoing fades fast, incoming fades in
+   and settles from 98% (View Transitions; see showScreen in popup.js). */
+@keyframes qm-vt-out { to { opacity: 0; } }
+@keyframes qm-vt-in  { from { opacity: 0; transform: scale(.98); } }
+::view-transition-old(root) { animation: qm-vt-out 90ms var(--qm-accel) both !important; }
+::view-transition-new(root) { animation: qm-vt-in 210ms var(--qm-decel) 90ms both !important; }
+
+/* List changes (sort, filter, delete): cards glide to their new places, page holds still. */
+html.qm-list::view-transition-old(root), html.qm-list::view-transition-new(root) { animation: none !important; }
+::view-transition-group(*) { animation-duration: 380ms; animation-timing-function: var(--qm-emph); }
+.recordings-grid.settled .video-card { animation: none !important; }
+
+/* Gliding selection indicators (placed by qcGlide in motion.js) */
+.qm-indicator {
+  position: absolute; top: 0; left: 0; z-index: 0; pointer-events: none; border-radius: var(--shape-full);
+  transition: transform 380ms var(--qm-emph), width 380ms var(--qm-emph), height 380ms var(--qm-emph) !important;
+}
+/* Dashboard filter: one pill track, one gliding pill */
+.filter-tabs { position: relative; isolation: isolate; gap: 0 !important; padding: 4px; border-radius: var(--shape-full); background: var(--md-secondary-container); }
+.filter-tabs .qm-indicator { background: var(--md-primary); }
+.filter-tab, .filter-tab:first-child, .filter-tab:last-child, .filter-tab.active {
+  position: relative; z-index: 1; background: transparent !important; border-radius: var(--shape-full) !important;
+}
+.filter-tab.active { color: var(--md-on-primary) !important; }
+/* Settings sections: the active pill glides down the list */
+.settings-nav { isolation: isolate; }
+@media (max-width: 900px) { .settings-nav { position: relative !important; } }
+.settings-nav .qm-indicator { background: var(--md-secondary-container); }
+.settings-nav-item { position: relative; z-index: 1; }
+.settings-nav-item.active { background: transparent !important; }
+
+/* Popup switches: the row's icon lights up when its switch is on */
+.toggle-label:has(input:checked) .icon-sm { background: var(--md-primary-container) !important; color: var(--md-on-primary-container) !important; }
+
+/* Copy → Copied: tonal success state */
+#btn-copy.copied, .card-btn.copied { background: var(--md-success-container) !important; color: var(--md-on-success-container) !important; }
+
+/* New Recording: the + turns a quarter on hover */
+.page-header .btn svg { transition: transform 300ms var(--qm-emph) !important; }
+.page-header .btn:hover svg { transform: rotate(90deg); }
+
+/* Landing features: the M3 shape turns slowly on hover while the glyph lifts */
+.feat-icon .shape { transition: transform 700ms var(--qm-emph) !important; }
+.feat:hover .feat-icon .shape { transform: rotate(30deg); }
+
+/* ═══ 7. Ambient loops (always on, always calm) ═════════════════════════
+   Slow cycles (3–30 s), 1–4 px moves or slow turns, neighbours offset so nothing
+   pulses in lockstep. Text never moves; loops live on icons, shapes, badges,
+   bars, thumbnails and the logo. Delays start after entrance animations. */
+@keyframes qa-bob     { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes qa-bob-sm  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+@keyframes qa-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes qa-turn    { to { transform: rotate(360deg); } }
+@keyframes qa-sway    { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes qa-drift   { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(0, -12px) rotate(18deg); } }
+@keyframes qa-wave    { to { -webkit-mask-position: 20px 0; mask-position: 20px 0; } }
+@keyframes qa-glow    { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--md-primary) 0%, transparent); } 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--md-primary) 14%, transparent); } }
+@keyframes qa-halo    { from { transform: scale(.8); opacity: .5; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes qa-sheen   { 0% { background-position: 150% 0; } 100% { background-position: -50% 0; } }
+@keyframes qa-pan     { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(6px, -4px); } }
+@keyframes qa-pan-b   { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-5px, 5px); } }
+
+/* Logo everywhere: badge turns, ghost floats, skirt ripples, eyes glance and blink */
+.qc-cookie { animation: qc-spin 24s linear infinite !important; }
+.qc-ghost  { animation: qc-float 3.4s ease-in-out infinite !important; }
+.qc-body   { animation: qc-skirt 1.1s ease-in-out infinite alternate !important; }
+.qc-look   { animation: qc-look 7s var(--qm-emph) infinite !important; }
+.qc-eyes   { animation: qc-blink 5s infinite !important; }
+
+/* Progress bars: the M3 wavy line keeps flowing */
+.quota-fill { animation: qa-wave 1.4s linear infinite !important; }
+.quota-bar i { background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .28) 50%, transparent 70%) !important; background-size: 200% 100% !important; animation: qa-sheen 2.8s linear infinite !important; }
+
+/* ── Popup ── */
+.source-opt.active svg { animation: qa-bob-sm 3s ease-in-out infinite !important; }
+.toggle-label:has(input:checked) .icon-sm { animation: qa-breathe 3.2s ease-in-out infinite !important; }
+.options-row .toggle-label:nth-child(2):has(input:checked) .icon-sm { animation-delay: -1.1s !important; }
+.options-row .toggle-label:nth-child(3):has(input:checked) .icon-sm { animation-delay: -2.2s !important; }
+.icon-btn svg { animation: qa-bob-sm 4.5s ease-in-out infinite !important; }
+.icon-btn:nth-child(2) svg { animation-delay: -2.2s !important; }
+.rec-glyph::after { display: block !important; animation: qa-halo 2.2s var(--qm-decel) infinite !important; }
+.btn-record:not(:disabled) { animation: qa-glow 3.6s ease-in-out 600ms infinite !important; }
+.btn-record:disabled .rec-glyph::after { display: none !important; }
+#screen-recording:not(.hidden) .rec-core { animation: qm-settle 450ms var(--qm-decel) both, qa-breathe 2.4s ease-in-out 450ms infinite !important; }
+#screen-paused:not(.hidden) .paused-dot i { animation: qa-breathe 2s ease-in-out infinite !important; }
+#screen-paused:not(.hidden) .paused-dot i + i { animation-delay: -1s !important; }
+.rec-ring.r2 { display: block !important; animation-delay: 1.2s !important; }
+#screen-done:not(.hidden) .done-shape { transform-origin: center; animation: qm-grow 420ms var(--qm-decel) both, qa-turn 30s linear 420ms infinite !important; }
+#screen-uploading:not(.hidden) .upload-visual .qc-logo, #screen-uploading:not(.hidden) .upload-visual svg:not(.m3-loader) { animation: qa-bob 2.6s ease-in-out infinite; }
+#screen-error:not(.hidden) .error-icon { animation: qm-settle 360ms var(--qm-decel) both, qa-breathe 3s ease-in-out 400ms infinite !important; }
+.perm-icon-bg { animation: qa-bob-sm 4s ease-in-out infinite !important; }
+.perm-card:nth-child(2) .perm-icon-bg { animation-delay: -1.3s !important; }
+.perm-card:nth-child(3) .perm-icon-bg { animation-delay: -2.6s !important; }
+.devices li .dev-icon { animation: qa-bob-sm 4s ease-in-out infinite !important; }
+.devices li:nth-child(2) .dev-icon { animation-delay: -2s !important; }
+
+/* ── Website: landing ── */
+.stage .m3-shape { opacity: .9; }
+.stage .sh-a { animation: qa-drift 11s ease-in-out infinite !important; }
+.stage .sh-b { animation: qa-drift 13s ease-in-out -4s infinite reverse !important; }
+.stage .sh-c { animation: qa-drift 9s ease-in-out -2s infinite !important; }
+.stage .sh-d { animation: qa-drift 15s ease-in-out -7s infinite reverse !important; }
+.stage .mock { animation: qm-settle 600ms var(--qm-decel) 200ms both, qa-bob 6s ease-in-out 800ms infinite !important; }
+.mock-rec i { animation: qm-blink 1.6s ease-in-out infinite !important; }
+.feat-icon .shape { animation: qa-turn 30s linear infinite !important; }
+.feat:nth-child(2n) .feat-icon .shape { animation-direction: reverse !important; animation-duration: 36s !important; }
+.feat-icon .glyph { animation: qa-bob-sm 3.6s ease-in-out infinite !important; }
+.feat:nth-child(2) .feat-icon .glyph { animation-delay: -.6s !important; }
+.feat:nth-child(3) .feat-icon .glyph { animation-delay: -1.2s !important; }
+.feat:nth-child(4) .feat-icon .glyph { animation-delay: -1.8s !important; }
+.feat:nth-child(5) .feat-icon .glyph { animation-delay: -2.4s !important; }
+.feat:nth-child(6) .feat-icon .glyph { animation-delay: -3s !important; }
+.hero-actions .btn-primary, .plan.featured .btn, .pricing-card.featured .btn { animation: qa-glow 3.6s ease-in-out 1s infinite !important; }
+.cta-band .btn { animation: qa-glow 3.6s ease-in-out infinite !important; }
+
+/* ── Website: dashboard + settings ── */
+.workspace-icon .qc-logo { animation: qa-bob 5s ease-in-out infinite !important; }
+.card-thumb svg circle:first-of-type { animation: qa-pan 9s ease-in-out infinite !important; }
+.card-thumb svg ellipse { animation: qa-pan-b 11s ease-in-out infinite !important; }
+.card-thumb svg circle:last-of-type { animation: qa-pan 13s ease-in-out -5s infinite reverse !important; }
+.video-card:nth-child(2n) .card-thumb svg * { animation-delay: -3s !important; }
+.video-card:nth-child(3n) .card-thumb svg * { animation-delay: -6s !important; }
+.card-play-btn svg { animation: qa-bob-sm 2.4s ease-in-out infinite !important; }
+.nav-item.active svg, .settings-nav-item.active svg { animation: qa-sway 4s ease-in-out infinite !important; }
+.account-avatar { animation: qa-glow 4s ease-in-out infinite !important; }
+.plan-badge.lifetime, .nav-badge { background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .3) 50%, transparent 70%) !important; background-size: 200% 100% !important; animation: qa-sheen 3.2s linear infinite !important; }
+.empty-art .qc-logo, .auth-art .qc-logo, .signin-wall .qc-logo { animation: qa-bob 4s ease-in-out infinite !important; }
+
+/* ═══ 8. Smooth website navigation ═══════════════════════════════════════
+   Page-to-page clicks use the same fade-through as popup screens (cross-document
+   View Transitions); the app bar and sidebar stay put while content changes. */
+@view-transition { navigation: auto; }
+html { scroll-behavior: smooth; }
+.qc-topbar:not(.mobile-bar) { view-transition-name: qc-appbar; }
+.sidebar { view-transition-name: qc-sidebar; }
+::view-transition-group(qc-appbar), ::view-transition-group(qc-sidebar) { animation: none !important; }
+::view-transition-old(qc-appbar), ::view-transition-old(qc-sidebar) { animation: none !important; opacity: 0; }
+::view-transition-new(qc-appbar), ::view-transition-new(qc-sidebar) { animation: none !important; }
+
+/* ── Reduced motion: everything is instant and still ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .done-check { stroke-dashoffset: 0 !important; }
+  .js [data-reveal] { opacity: 1 !important; transform: none !important; }
+  html { scroll-behavior: auto; }
+  @view-transition { navigation: none; }
+}

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>QuickCast — Video</title>
+  <meta name="description" content="Watch this QuickCast screen recording." />
+  <meta name="theme-color" content="#FCF8FF" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#131318" media="(prefers-color-scheme: dark)" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" />
+  <link rel="stylesheet" href="/assets/m3.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-128.png" />
+  <script src="/assets/theme.js"></script>
+  <style>
+    .main { max-width: 1040px; margin: 0 auto; padding: 24px 24px 64px; animation: m3-enter var(--duration-long) var(--ease-emph-dec) both; }
+
+    /* ── Not found ── */
+    .error-wrap { text-align: center; padding: 72px 20px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .error-wrap.hidden { display: none; }
+    .error-art .qc-logo { --size: 120px; --logo-shape: var(--md-surface-container-highest); --logo-ghost: var(--md-outline); --logo-eye: var(--md-surface-container-highest); }
+    .error-wrap h2 { font-size: 36px; font-weight: 650; letter-spacing: -.03em; }
+    .error-wrap p { color: var(--md-on-surface-variant); font-size: 17px; margin-bottom: 8px; }
+
+    /* ── Video header ── */
+    #content.hidden { display: none; }
+    .video-header { margin-bottom: 20px; }
+    .video-title { font-size: clamp(26px, 3.4vw, 40px); font-weight: 650; letter-spacing: -.03em; line-height: 1.15; }
+    .video-meta { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .meta-pill {
+      display: inline-flex; align-items: center; height: 32px; padding: 0 14px;
+      border-radius: var(--shape-sm); background: var(--md-surface-container-high);
+      font-size: 14px; font-weight: 500; color: var(--md-on-surface-variant);
+    }
+
+    /* ── Player ── */
+    .player-wrap {
+      position: relative; width: 100%; background: #0E0E13;
+      border-radius: var(--shape-xl); overflow: hidden; box-shadow: var(--elev-3);
+    }
+    .player-wrap video { width: 100%; display: block; max-height: 70vh; background: #000; }
+    .loading-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+      background: #131318;
+    }
+    .loading-overlay.hidden { display: none; }
+    .loading-overlay .m3-loader { background: #C0C1FF; }
+    .load-text { color: #C8C5D0; font-size: 15px; font-weight: 500; }
+
+    /* ── Share bar ── */
+    .share-bar {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 16px; padding: 8px 8px 8px 24px;
+      background: var(--md-surface-container); border-radius: var(--shape-full);
+    }
+    .share-label { font-size: 14px; font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; }
+    .share-input {
+      flex: 1; min-width: 0; height: 40px; padding: 0 16px;
+      background: var(--md-surface-container-lowest); border: none; border-radius: var(--shape-full);
+      font: 400 14px var(--font); color: var(--md-on-surface-variant); outline: none;
+      box-shadow: inset 0 0 0 1px var(--md-outline-variant);
+      transition: box-shadow var(--duration-base) var(--ease-emph), color var(--duration-base) var(--ease-emph);
+    }
+    .share-input:focus { box-shadow: inset 0 0 0 2px var(--md-primary); color: var(--md-on-surface); }
+        .btn-copy.copied { --btn-bg: var(--md-success-container); --btn-fg: var(--md-on-success-container); }
+
+    /* ── Lock screen ── */
+    .hidden { display: none !important; }
+    .lock-wrap { display: grid; place-items: center; padding: 48px 0; }
+    .lock-card { width: min(420px, 100%); padding: 36px 28px; border-radius: var(--shape-xxl); background: var(--md-surface-container-low); text-align: center; display: flex; flex-direction: column; gap: 12px; }
+    .lock-icon { width: 64px; height: 64px; margin: 0 auto 4px; border-radius: 50%; display: grid; place-items: center; background: var(--md-primary-container); color: var(--md-on-primary-container); }
+    .lock-icon svg { width: 28px; height: 28px; }
+    .lock-card h2 { font-size: 24px; font-weight: 650; letter-spacing: -.02em; }
+    .lock-card p { color: var(--md-on-surface-variant); font-size: 15px; }
+    .lock-card .lock-err { color: var(--md-error); min-height: 20px; font-size: 14px; }
+    .field { width: 100%; padding: 12px 16px; border: none; border-radius: var(--shape-md); background: var(--md-surface-container-highest); color: var(--md-on-surface); font: 400 15px var(--font); outline: none; box-shadow: inset 0 -1px 0 var(--md-outline); resize: vertical; }
+    .field:focus { box-shadow: inset 0 -2px 0 var(--md-primary); }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .owner-bar { margin-bottom: 16px; padding: 12px 18px; border-radius: var(--shape-lg); background: var(--md-secondary-container); color: var(--md-on-secondary-container); font-size: 14px; }
+    .owner-bar a { color: inherit; font-weight: 650; margin-left: 6px; }
+
+    /* ── Player bar: reactions + speed + download ── */
+    .player-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+    .reactions { display: flex; gap: 4px; flex-wrap: wrap; padding: 4px; border-radius: var(--shape-full); background: var(--md-surface-container); }
+    .react-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px; border: none; border-radius: var(--shape-full); background: transparent; color: var(--md-on-surface); font: 600 14px var(--font); cursor: pointer; }
+    .react-btn:hover { background: var(--md-surface-container-highest); }
+    .react-btn .e { font-size: 20px; line-height: 1; }
+    .react-btn .n { color: var(--md-on-surface-variant); font-variant-numeric: tabular-nums; }
+    .react-btn .n:empty { display: none; }
+    .react-btn.mine { background: var(--md-primary-container); color: var(--md-on-primary-container); }
+    .react-float { position: fixed; z-index: 60; pointer-events: none; font-size: 28px; }
+    .player-tools { display: flex; gap: 8px; align-items: center; }
+    .player-tools .btn svg { width: 18px; height: 18px; }
+    .speed-wrap { position: relative; }
+    .menu { position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 20; min-width: 132px; padding: 8px 0; border-radius: var(--shape-sm); background: var(--md-surface-container); box-shadow: var(--elev-2); }
+    .menu button { display: flex; width: 100%; align-items: center; justify-content: space-between; height: 44px; padding: 0 16px; border: none; background: none; color: var(--md-on-surface); font: 500 14px var(--font); cursor: pointer; }
+    .menu button:hover, .menu button:focus-visible { background: color-mix(in srgb, var(--md-on-surface) 8%, transparent); outline: none; }
+    .menu button[aria-checked="true"] { color: var(--md-primary); font-weight: 650; }
+    .menu button[aria-checked="true"]::after { content: "✓"; }
+
+    /* ── Comments ── */
+    .comments { margin-top: 28px; }
+    .c-title { font-size: 22px; font-weight: 650; letter-spacing: -.015em; margin-bottom: 12px; }
+    .c-count { color: var(--md-on-surface-variant); font-weight: 500; font-size: 16px; }
+    .c-form { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: var(--shape-xl); background: var(--md-surface-container-low); }
+    .c-form-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .c-at { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--md-on-surface-variant); cursor: pointer; }
+    .c-err { flex: 1; color: var(--md-error); font-size: 14px; }
+    .c-form-row .btn { margin-left: auto; }
+    .c-list { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 4px; padding: 0; }
+    .c-item { display: flex; gap: 12px; padding: 14px 16px; border-radius: var(--shape-lg); background: var(--md-surface-container-low); }
+    .c-avatar { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--md-tertiary-container); color: var(--md-on-tertiary-container); font-weight: 650; }
+    .c-head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: 14px; }
+    .c-head b { font-weight: 650; }
+    .c-head time { color: var(--md-on-surface-variant); font-size: 13px; }
+    .c-text { margin-top: 2px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .c-jump { border: none; padding: 2px 10px; border-radius: var(--shape-full); background: var(--md-primary-container); color: var(--md-on-primary-container); font: 600 12px var(--font); cursor: pointer; font-variant-numeric: tabular-nums; }
+    .c-empty { color: var(--md-on-surface-variant); font-size: 15px; padding: 16px 4px; }
+    .snackbar { position: fixed; left: 50%; bottom: 24px; z-index: 50; display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 16px; max-width: calc(100vw - 32px);
+      border-radius: var(--shape-sm); background: var(--md-inverse-surface); color: var(--md-inverse-on-surface); font-size: 14px; box-shadow: var(--elev-3);
+      transform: translate(-50%, 120%); opacity: 0; }
+    .snackbar.show { transform: translate(-50%, 0); opacity: 1; }
+
+    /* ── CTA strip ── */
+    .cta-strip {
+      margin-top: 24px; padding: 28px 32px;
+      background: var(--md-primary-container); color: var(--md-on-primary-container);
+      border-radius: var(--shape-xl);
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    }
+    .cta-strip-text { display: flex; align-items: center; gap: 16px; }
+    .cta-strip-text .qc-logo { --size: 56px; }
+    .cta-strip-text p { font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin-bottom: 2px; }
+    .cta-strip-text span { font-size: 14px; opacity: .8; }
+
+    /* ── Footer ── */
+    footer.viewer-foot { text-align: center; padding: 32px 20px; color: var(--md-on-surface-variant); font-size: 14px; }
+    footer.viewer-foot a { color: var(--md-primary); text-decoration: none; font-weight: 600; }
+    footer.viewer-foot a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .main { padding: 16px 16px 48px; }
+      .share-bar { border-radius: var(--shape-xl); flex-wrap: wrap; padding: 16px; }
+      .share-label { width: 100%; }
+      .cta-strip { padding: 24px; }
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/calm.css" />
+</head>
+<body>
+
+  <header class="qc-topbar" id="topbar">
+    <a href="/" class="qc-brand" aria-label="QuickCast home">
+      <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+      QuickCast
+    </a>
+    <a href="/" class="btn btn-primary">Record for free</a>
+  </header>
+
+  <main class="main">
+
+    <div id="error-wrap" class="error-wrap hidden">
+      <div class="error-art"><span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span></div>
+      <h2>Video not found</h2>
+      <p>This link may have expired or been deleted.</p>
+      <a href="/" class="btn btn-primary btn-lg">Make your own recording</a>
+    </div>
+
+    <div id="lock-wrap" class="lock-wrap hidden">
+      <form id="lock-form" class="lock-card">
+        <div class="lock-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <h2>This video is password protected</h2>
+        <p>Enter the password the sender gave you.</p>
+        <label class="visually-hidden" for="lock-pass">Password</label>
+        <input id="lock-pass" type="password" class="field" placeholder="Password" autocomplete="current-password" required />
+        <p id="lock-err" class="lock-err" role="alert"></p>
+        <button class="btn btn-primary btn-lg" id="lock-btn">Watch video</button>
+      </form>
+    </div>
+
+    <div id="content" class="hidden">
+      <div id="owner-bar" class="owner-bar hidden">You own this video, so your views aren't counted. <a href="/dashboard">Trim, privacy &amp; insights</a></div>
+      <div class="video-header">
+        <h1 id="video-title" class="video-title"></h1>
+        <div class="video-meta">
+          <span id="video-date" class="meta-pill"></span>
+          <span id="video-duration" class="meta-pill hidden"></span>
+          <span id="video-views" class="meta-pill hidden"></span>
+        </div>
+      </div>
+
+      <div class="player-wrap">
+        <div id="loading-overlay" class="loading-overlay">
+          <div class="m3-loader" role="progressbar" aria-label="Loading video"></div>
+          <span class="load-text">Loading video…</span>
+        </div>
+        <video id="player" controls playsinline preload="metadata"></video>
+      </div>
+
+      <div class="player-bar">
+        <div class="reactions hidden" id="reactions" role="group" aria-label="React to this video"></div>
+        <div class="player-tools">
+          <div class="speed-wrap">
+            <button id="btn-speed" class="btn btn-tonal btn-sm" aria-haspopup="menu" aria-expanded="false" aria-label="Playback speed">1×</button>
+            <div id="speed-menu" class="menu hidden" role="menu" aria-label="Playback speed"></div>
+          </div>
+          <button id="btn-download" class="btn btn-tonal btn-sm hidden">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+            <span id="download-label">Download</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="share-bar">
+        <span class="share-label">Share link</span>
+        <input id="share-input" class="share-input" readonly />
+        <button id="btn-copy" class="btn btn-primary btn-copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy link
+        </button>
+      </div>
+
+      <section class="comments hidden" id="comments" aria-labelledby="c-title">
+        <h2 id="c-title" class="c-title">Comments <span id="c-count" class="c-count"></span></h2>
+        <form id="c-form" class="c-form">
+          <input id="c-name" class="field" maxlength="40" placeholder="Your name" autocomplete="name" aria-label="Your name" />
+          <textarea id="c-body" class="field" maxlength="1000" rows="2" placeholder="Add a comment…" aria-label="Comment" required></textarea>
+          <div class="c-form-row">
+            <label class="c-at"><input type="checkbox" id="c-at" checked /> at <span id="c-time">0:00</span></label>
+            <span id="c-err" class="c-err" role="alert"></span>
+            <button class="btn btn-primary btn-sm" id="c-send">Comment</button>
+          </div>
+        </form>
+        <ol id="c-list" class="c-list"></ol>
+        <p id="c-empty" class="c-empty">No comments yet. Be the first to say something.</p>
+      </section>
+
+      <div class="cta-strip">
+        <div class="cta-strip-text">
+          <span class="qc-logo"><svg viewBox="0 0 48 48" aria-hidden="true"><path class="qc-cookie" d="M24 0.3L26 0.9L27.8 2.3L29.4 3.9L30.9 4.9L32.8 5.2L35 4.9L37.3 5L39.2 5.8L40.4 7.6L40.9 9.9L41 12.1L41.6 13.8L42.8 15.2L44.7 16.5L46.4 18L47.3 19.9L47.1 22L46 24L44.7 25.8L44 27.5L44.1 29.4L44.7 31.5L45 33.8L44.5 35.8L43 37.3L40.9 38.1L38.7 38.7L37 39.6L35.9 41L35 43.1L33.8 45L32.1 46.3L30 46.4L27.8 45.7L25.8 44.7L24 44.3L22.2 44.7L20.2 45.7L18 46.4L15.9 46.3L14.2 45L13 43.1L12.1 41L11 39.6L9.3 38.7L7.1 38.1L5 37.3L3.5 35.9L3 33.8L3.3 31.5L3.9 29.4L4 27.5L3.3 25.8L2 24L0.9 22L0.7 19.9L1.6 18L3.3 16.5L5.2 15.2L6.4 13.8L7 12.1L7.1 9.9L7.6 7.6L8.8 5.8L10.7 5L13 4.9L15.2 5.2L17.1 4.9L18.6 3.9L20.2 2.3L22 0.9Z"/><g class="qc-hop"><g class="qc-ghost"><path class="qc-body" d="M14 35V22C14 16.5 18.5 12 24 12S34 16.5 34 22V35Q32.33 37.6 30.67 35T27.33 35T24 35T20.67 35T17.33 35T14 35Z"/><g class="qc-look"><g class="qc-eyes"><ellipse cx="20.6" cy="22.6" rx="1.8" ry="2.4"/><ellipse cx="27.4" cy="22.6" rx="1.8" ry="2.4"/></g></g></g></g></svg></span>
+          <div><p>Record your own screen in seconds</p>
+          <span>Free Chrome extension · No account needed to start</span></div>
+        </div>
+        <a href="/" class="btn btn-primary btn-lg">Try QuickCast free</a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="viewer-foot">
+    Made with <a href="/">QuickCast</a> — free screen recording with instant sharing
+  </footer>
+
+  <div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+  <script src="/assets/motion.js"></script>
+  <script src="/assets/auth.js"></script>
+  <script src="/assets/viewer.js"></script>
+</body>
+</html>
